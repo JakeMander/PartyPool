@@ -19,4 +19,7 @@
     <string name="log_in">Log In</string>
     <string name="register">Register</string>
     <string name="sign_up">Sign Up</string>
+    <string name="login_successful">Login Successful!</string>
+    <string name="this_is_the_create_join_party_page">This is the create/join party page</string>
+    <string name="title_activity_account_creation">Sign in</string>
 </resources>

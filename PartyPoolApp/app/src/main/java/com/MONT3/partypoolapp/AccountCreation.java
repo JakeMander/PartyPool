@@ -3,7 +3,6 @@ package com.MONT3.partypoolapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -38,7 +37,7 @@ import static android.Manifest.permission.READ_CONTACTS;
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class AccountCreation extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
@@ -63,25 +62,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_account_creation);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
-
-        Button button1 = (Button) findViewById(R.id.button);
-        button1.setOnClickListener( new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Intent intent1 = new Intent(LoginActivity.this, AccountCreation.class);
-                startActivity(intent1);
-            }
-        });
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -185,15 +172,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             focusView = mEmailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            //mEmailView.setError(getString(R.string.error_invalid_email));
-            mEmailView.setError("Username should be 6-12 characters");
-            focusView = mEmailView;
-            cancel = true;
-        }
-        else if(!email.equals("testuser") || !password.equals("password"))
-        {
-            mEmailView.setError("Incorrect Credentials");
-            mPasswordView.setError("Incorrect Credentials");
+            mEmailView.setError(getString(R.string.error_invalid_email));
             focusView = mEmailView;
             cancel = true;
         }
@@ -213,9 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        //return email.contains("@");
-
-        return (email.length() >= 6 && email.length() <= 12);
+        return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
@@ -296,7 +273,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
+                new ArrayAdapter<>(AccountCreation.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
@@ -356,8 +333,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             showProgress(false);
 
             if (success) {
-                Intent myIntent = new Intent(LoginActivity.this, TestActivity.class);
-                LoginActivity.this.startActivity(myIntent);
+                finish();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
@@ -369,8 +345,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mAuthTask = null;
             showProgress(false);
         }
-
-
     }
 }
 

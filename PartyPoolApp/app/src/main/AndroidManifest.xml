@@ -15,6 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".AccountCreation"
+            android:label="@string/title_activity_account_creation"></activity>
+        <activity android:name=".TestActivity" />
+        <activity
             android:name=".LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
