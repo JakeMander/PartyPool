@@ -1,0 +1,63 @@
+
+/* 
+ *  AUTHOR: DAVID THOMAS MORGAN 
+ *  CREATED: 18/02/2018
+ *  LAST UPDATED: 20/02/2018 
+ */
+
+
+/* Creates 'users' table */
+CREATE TABLE users
+(username varchar(225) PRIMARY KEY,
+password varchar(225) NOT NULL
+);
+
+
+/* Creates 'userAuthenticate' table */
+CREATE TABLE userAuthenticate
+(username varchar(225) PRIMARY KEY,
+token int NOT NULL,
+FOREIGN KEY (username) REFERENCES users(username)
+);
+
+/* Creates 'Party' table */
+CREATE TABLE party
+(PartyID char(6) PRIMARY KEY,
+Mode int NOT NULL,
+AdminUsername varchar(225) NOT NULL,
+FOREIGN KEY (AdminUsername) REFERENCES users(username)
+);
+
+/* Creates 'OnlineUser' table */
+CREATE TABLE onlineUser
+(Username varchar(225) NOT NULL,
+PartyID char(6) NOT NULL,
+FOREIGN KEY (Username) REFERENCES users(username),
+FOREIGN KEY (PartyID) REFERENCES party(PartyID),
+PRIMARY KEY(Username, PartyID)
+);
+
+/* Creates 'Song' Table */
+CREATE TABLE song
+(SongID SERIAL PRIMARY KEY,
+SongName varchar(225) NOT NULL,
+Artist varchar(225) NOT NULL,
+Album varchar(225) NOT NULL,
+YearReleased char(4) NOT NULL,
+Genre varchar(225) NOT NULL,
+ArtDirectory text NOT NULL,
+LengthOfSong time NOT NULL
+);
+
+/* Creates 'Voting' Table */
+CREATE TABLE voting
+(SongID SERIAL NOT NULL,
+PartyID char(6) NOT NULL,
+Votes int,
+FOREIGN KEY (PartyID) REFERENCES party(PartyID),
+FOREIGN KEY (SongID) REFERENCES song(SongID),
+PRIMARY KEY (PartyID, SongID)
+);
+
+
+
