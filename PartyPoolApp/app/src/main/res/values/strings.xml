@@ -6,6 +6,8 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_username">This email address is invalid</string>
+
     <string name="error_invalid_password">This password is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
@@ -18,8 +20,10 @@
     <string name="sign_in">Sign In</string>
     <string name="log_in">Log In</string>
     <string name="register">Register</string>
-    <string name="sign_up">Sign Up</string>
     <string name="login_successful">Login Successful!</string>
     <string name="this_is_the_create_join_party_page">This is the create/join party page</string>
     <string name="title_activity_account_creation">Sign in</string>
+    <string name="create_username">Create Username</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="create_password">Create Password</string>
 </resources>

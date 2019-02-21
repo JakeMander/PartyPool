@@ -75,18 +75,18 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
                 if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
+                    attemptSignUp();
                     return true;
                 }
                 return false;
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.sign_up_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                attemptLogin();
+                attemptSignUp();
             }
         });
 
@@ -143,7 +143,7 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    private void attemptLogin() {
+    private void attemptSignUp() {
         if (mAuthTask != null) {
             return;
         }
@@ -172,7 +172,7 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
             focusView = mEmailView;
             cancel = true;
         } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+            mEmailView.setError(getString(R.string.error_invalid_username));
             focusView = mEmailView;
             cancel = true;
         }
@@ -192,7 +192,9 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        //return email.contains("@");
+        return (email.length() >= 6 && email.length() <= 12);
+
     }
 
     private boolean isPasswordValid(String password) {
