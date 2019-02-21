@@ -22,4 +22,13 @@
     <string name="login_successful">Login Successful!</string>
     <string name="this_is_the_create_join_party_page">This is the create/join party page</string>
     <string name="title_activity_account_creation">Sign in</string>
+    <string name="textview">TextView</string>
+    <string name="welcome_user">Welcome [USER]</string>
+    <string name="button1">Button</string>
+    <string name="join_a_party">Join A Party</string>
+    <string name="button2">Button</string>
+    <string name="create_a_party">Create A Party</string>
+    <string name="continue_party">Continue Party</string>
+    <string name="view_profile">View Profile</string>
+    <string name="log_out">Log Out</string>
 </resources>
