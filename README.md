@@ -1,10 +1,10 @@
 # PartyPool
 
 ## Team
-- **Jake Mander: Project Manager and Backend Programmer.
-- **David Morgan: Backend/Database Programmer.
-- **Jack Dove: Front End UI Programmer.
-- **Paul Lowe: Front End UI Programmer.
+- **Jake Mander: Project Manager and Backend Programmer**.
+- **David Morgan: Backend/Database Programmer**.
+- **Jack Dove: Front End UI Programmer**.
+- **Paul Lowe: Front End UI Programmer**.
 
 ## About PartyPool
 PartyPool is an Android based mobile application designed by Team 3 (MONT3) for Team Project designed to allow users to vote for the music they want at parties. Users host "Parties" and share a unique 4-digit password amongst guests which is used to join the party. The host (or "DJ") then uploads songs to a "Pool" of tracks, which the guests then vote on in order to determine which song gets played next. 
