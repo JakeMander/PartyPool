@@ -45,3 +45,5 @@ class User
         return $this->created;
     }
 }
+
+?>
