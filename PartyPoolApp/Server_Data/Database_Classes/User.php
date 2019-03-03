@@ -8,13 +8,26 @@
 
 class User
 {
-    private $username;
-    private $password;
+    //  Provide The Name Of The Table To Be Accessed
+    private $tableName = "users";
 
-    public function __construct($usernameIn, $passwordIn)
+    //  Various Details To Be Populated In The Database. These Will Be Used For Account Creation/Login
+    //  As Well As General Administration.
+    public $username;
+    public $password;
+    public $created;
+
+    public function __construct($usernameIn, $passwordIn, $createdIn)
     {
         $username = $usernameIn;
         $password = $passwordIn;
+        $created = $createdIn;
+    }
+
+    //  Accessors To Retrieve Users Information, As Well As Access The Appropriate Table In The API.
+    public function getTable()
+    {
+        return $this->tableName;
     }
 
     public function getUsername()
@@ -25,5 +38,10 @@ class User
     public function getPassword()
     {
         return $this->password;
+    }
+
+    public function getCreated()
+    {
+        return $this->created;
     }
 }
