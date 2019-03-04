@@ -61,13 +61,15 @@ class RestService
 
   public function handleRawRequest() 
   {
+    // Get The URL Of The Current PHP File.
     $url = $this->getFullUrl();
 
     //  JAKE NOTE: Method Determines Which Method The HTTP Request Has Been Submitted As.
     $method = $_SERVER['REQUEST_METHOD'];
 
-
+    // JAKE NOTE: Method Gets Body Of The HTTP Request.
     $requestBody = file_get_contents('php://input');
+
     // Look for any parameters appended to the URL in the form
     // "q=xyz".  These will be the parameters that determine which
     // functions are used for each HTTP method.  For example, a URL 
@@ -76,9 +78,11 @@ class RestService
     //
     if (isset($_GET['q']))
     {
+        //  JAKE NOTE: Split The URL Into It's Individual Components.
         $parameters = explode("/", $_GET['q']);
         if (strlen($this->apiStringToMatch) > 0 && count($parameters) > 0)
         {
+            // JAKE NOTE: This Statement Checks Length Of The API If A Parameter Has Been Provided To apiStringToMatch.
             if (strcmp($this->apiStringToMatch, $parameters[0]) != 0)
             {
                 $this->notImplementedResponse();
@@ -86,11 +90,18 @@ class RestService
             }
         }
     }
+
+    //  JAKE NOTE:  We Do Not Provide A String To apiStringToMatch, So Just Take All The URI Parameters And Assign Them
+    //  To An Array.
     else
     {
         $parameters = array();
     }
-    if (isset($_SERVER['HTTP_ACCEPT'])) 
+
+    //  JAKE NOTE: The $_SERVER['HTTP_ACCEPT'] Associative Array Handles The "Accept" Header Embedded In Each HTTP
+    //  Request. This Determines Which MIME Types (I.e. Text, Font, Image, Video, Model) The Client Can Handle.
+
+    if (isset($_SERVER['HTTP_ACCEPT']))
     {
       $accept = $_SERVER['HTTP_ACCEPT'];
     }
