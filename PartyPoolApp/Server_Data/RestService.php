@@ -55,34 +55,51 @@ class RestService
 
   public function __construct($apiStringToMatch) 
   {
+    //  JAKE NOTE: Supported Methods Is A String Which Sets The Available HTTP
+    //  Request Types Available For Processing.
     $this->supportedMethods = "GET, PUT, POST, DELETE";
     $this->apiStringToMatch = $apiStringToMatch;
+    
+    echo "<p>String To Match: ".$apiStringToMatch."</p>";
+    echo "<p>Supported Methods: ".$this->supportedMethods."</p>";
   }
 
   public function handleRawRequest() 
   {
-    // Get The URL Of The Current PHP File.
+    //  Get The URL Of The Current PHP File. Essentially:
+    //  https://computing.derby.ac.uk/~partypool/*API_Handler.php*CALLEDFILENAME*
     $url = $this->getFullUrl();
+    echo "<p>URL Of Called File: ".$url."</p>";
 
     //  JAKE NOTE: Method Determines Which Method The HTTP Request Has Been Submitted As.
     $method = $_SERVER['REQUEST_METHOD'];
+    echo "<p>Request Method: ".$method."</p>";
 
     // JAKE NOTE: Method Gets Body Of The HTTP Request.
     $requestBody = file_get_contents('php://input');
-
+    echo "<p>Request Body: ".$requestBody."</p>";
     // Look for any parameters appended to the URL in the form
     // "q=xyz".  These will be the parameters that determine which
     // functions are used for each HTTP method.  For example, a URL 
     // In the form q=books/x/y will see 'books', 'x' and 'y' placed 
     // in the first three elements of the array $parameters
     //
+    
+    //  JAKE NOTE: Print Any Values Sent In The Form:
+    //  https://computing.derby.ac.uk/~partypool?name=value&name2=value2
+    echo "Identified GET Parameters: ".var_dump($_GET);
+    
+    //  JAKE NOTE: All Request Parameters Set To GET['q']. This In Essence
+    //  Transforms The GET['q'] Associative Array Into A Standard Array Via
+    //  $parameters.
     if (isset($_GET['q']))
     {
         //  JAKE NOTE: Split The URL Into It's Individual Components.
         $parameters = explode("/", $_GET['q']);
         if (strlen($this->apiStringToMatch) > 0 && count($parameters) > 0)
         {
-            // JAKE NOTE: This Statement Checks Length Of The API If A Parameter Has Been Provided To apiStringToMatch.
+            // JAKE NOTE: This Statement Checks Length Of The API If A Parameter 
+            // Has Been Provided To apiStringToMatch.
             if (strcmp($this->apiStringToMatch, $parameters[0]) != 0)
             {
                 $this->notImplementedResponse();
@@ -95,7 +112,18 @@ class RestService
     //  To An Array.
     else
     {
-        $parameters = array();
+        //  TODO: Change $_GET To array() When Wayne's Method Is Correctly
+        //  Implemented.
+        
+        echo "Parameters: Parameters Reached";
+        $parameters = $_GET;
+        
+        echo "<p>Number Of GET Parameters: ".count($_GET)."</p>";
+        echo "<p>Parameters:</p>";
+        foreach($parameters as $key => $value)
+        {
+            echo "Key: ".$key." Value: ".$value;
+        }
     }
 
     //  JAKE NOTE: The $_SERVER['HTTP_ACCEPT'] Associative Array Handles The "Accept" Header Embedded In Each HTTP
@@ -109,6 +137,7 @@ class RestService
     {
       $accept = "";
     }
+    echo "<p>HTTP Accept Header: ".$accept."</p>";
     $this->handleRequest($url, $method, $parameters, $requestBody, $accept);
   }
 
