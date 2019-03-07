@@ -3,6 +3,7 @@ package com.MONT3.partypoolapp;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
@@ -31,6 +32,8 @@ public class CreateDialog extends AppCompatDialogFragment {
                     {
                         //choice = 1;
                         Toast.makeText(getActivity(),"Selected option: Party Mode",Toast.LENGTH_SHORT).show();
+                        Intent myIntent = new Intent(getContext(), MainScreenParty.class);
+                        startActivity(myIntent);
                     }
                     else if(radioContinuous.isChecked())
                     {
