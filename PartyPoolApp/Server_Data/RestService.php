@@ -78,13 +78,13 @@ class RestService
     // JAKE NOTE: Method Gets Body Of The HTTP Request.
     $requestBody = file_get_contents('php://input');
     echo "<p>Request Body: ".$requestBody."</p>";
+
     // Look for any parameters appended to the URL in the form
     // "q=xyz".  These will be the parameters that determine which
     // functions are used for each HTTP method.  For example, a URL 
     // In the form q=books/x/y will see 'books', 'x' and 'y' placed 
     // in the first three elements of the array $parameters
     //
-    
     //  JAKE NOTE: Print Any Values Sent In The Form:
     //  https://computing.derby.ac.uk/~partypool?name=value&name2=value2
     echo "Identified GET Parameters: ".var_dump($_GET);

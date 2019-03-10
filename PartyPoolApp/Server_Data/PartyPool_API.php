@@ -57,9 +57,21 @@ class PartyPool_API extends RestService
     
     public function performGet($url, $parameters, $requestBody, $accept)
     {
-        if (parameters["bob" == "1"])
+        if ($parameters["ACTION"] == "TESTQUERY")
         {
-            echo "VALUE WORKS";
+            echo "<p>DATABASE QUERY REQUEST RECIEVED</p>";
+
+            if (isset($parameters["USER"]))
+            {
+                $userValue = $parameters["USER"];
+                
+                echo "<p>RETRIEVING USER DATA FOR $userValue</p>";
+            }
+
+            else
+            {
+                echo "<p>NO USER SPECIFIED</p>";
+            }
         }
         
         else
