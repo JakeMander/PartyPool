@@ -19,12 +19,9 @@ require "RestService.php";
 
 class PartyPool_API extends RestService
 {
-    
-    //  Login Details Required For Database Communication
-    private $username = "pr_partypool";
-    private $password = "kJVjC7z";
-    private $host = "localhost";
-    
+
+    private $connString = "host=localhost port=5432 dbname=pr_partypool user=pr_partypool password=kJVjC7z";
+
     public function __construct()
     {
         //  Pass In An Empty String To Wayne's Service Class. We Do Not Need To
@@ -42,7 +39,7 @@ class PartyPool_API extends RestService
     //  Where ? Signifies The Start Of The GET Parameters, And & Is Used To
     //  Chain Multiple Parameters Together.
     //
-    //  Waynes Code Has Been Written In Such A Way, That The htaccess File Will
+    //  Wayne's Code Has Been Written In Such A Way, That The htaccess File Will
     //  Assign All Values After ? To A Value Called 'q'. This Can Then Be
     //  Accessed Via GET['q']. If The URL Is Stored In The Format:
     //  
@@ -64,8 +61,54 @@ class PartyPool_API extends RestService
             if (isset($parameters["USER"]))
             {
                 $userValue = $parameters["USER"];
+                $userData = array();
+
+                $conn = pg_connect($this->connString);
+
+                //  Test For Connection Error.
+                if ($conn)
+                {
+                    echo "<p>CONNECTION ESTABLISHED</p>";
+
+                    //  Attempt To Retrieve Data From The Database
+                    try
+                    {
+                        echo "<p>RUNNING QUERY</p>";
+
+                        //  Simple Test Query To Be Run.
+                        //  TODO: SANITISE INPUT!!!
+                        $result = pg_query($conn,"SELECT * FROM users WHERE username = '".$userValue."'ORDER BY username");
+
+                        if (!result)
+                        {
+                            echo"ERROR: QUERY HAS FAILED";
+                            exit;
+                        }
+
+                        while ($row = pg_fetch_row($result))
+                        {
+                            echo "<p>USERNAME: $row[0]\t PASSWORD: $row[1]</p>";
+                        }
+                    }
+
+                    catch(Exception $e)
+                    {
+                         echo "ERROR WITH QUERY: $e";
+                    }
+
+                    finally 
+                    {
+                        $conn->close();
+                    }
+                }
+
+                else
+                {
+                    echo"<p>CONNECTION FAILED</p>";
+                }
                 
                 echo "<p>RETRIEVING USER DATA FOR $userValue</p>";
+
             }
 
             else
