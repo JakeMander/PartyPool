@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffa500"
+    android:background="@color/colorBackground"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".AccountCreation">
 
 
@@ -19,29 +16,61 @@
         android:id="@+id/login_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="96dp"
-        android:layout_height="94dp"
-        android:layout_marginTop="25sp"
+        android:layout_height="95dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="48dp"
         android:contentDescription="@string/todo"
-        android:src="@android:drawable/sym_def_app_icon" />
+        android:src="@android:drawable/sym_def_app_icon"
+        app:layout_constraintBottom_toTopOf="@+id/signup_form"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ScrollView
         android:id="@+id/signup_form"
-        android:layout_width="match_parent"
-        android:layout_height="240sp"
-        android:layout_marginTop="50sp"
-        android:background="#AAAABB">
+        android:layout_width="379dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="#AAAABB"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/Sign_up_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#444444"
+                android:text="@string/enter_infomation"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+
+                android:textSize="25sp" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -84,7 +113,7 @@
                     android:id="@+id/create_re_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Re-Enter Password"
+                    android:hint="@string/re_enter_password"
                     android:imeActionId="6"
                     android:imeActionLabel="Sign Up"
                     android:imeOptions="actionUnspecified"
@@ -97,14 +126,13 @@
 
             <Button
                 android:id="@+id/sign_up_button"
-                style="?android:textAppearanceSmall"
+                style="@style/Widget.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/sign_up"
-                android:textStyle="bold" />
+                android:text="@string/sign_up" />
 
         </LinearLayout>
     </ScrollView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
