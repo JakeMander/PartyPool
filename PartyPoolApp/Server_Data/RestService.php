@@ -67,7 +67,7 @@ class RestService
   public function handleRawRequest() 
   {
     //  Get The URL Of The Current PHP File. Essentially:
-    //  https://computing.derby.ac.uk/~partypool/*API_Handler.php*CALLEDFILENAME*
+    //  https://computing.derby.ac.uk/~partypool/ParamnN1/ParamnN2/ParamNx
     $url = $this->getFullUrl();
     echo "<p>URL Of Called File: ".$url."</p>";
 
@@ -85,17 +85,23 @@ class RestService
     // In the form q=books/x/y will see 'books', 'x' and 'y' placed 
     // in the first three elements of the array $parameters
     //
-    //  JAKE NOTE: Print Any Values Sent In The Form:
-    //  https://computing.derby.ac.uk/~partypool?name=value&name2=value2
+    //  JAKE NOTE: Identify Any Parameters Passed Over Via GET.
     echo "Identified GET Parameters: ".var_dump($_GET);
     
-    //  JAKE NOTE: All Request Parameters Set To GET['q']. This In Essence
+    //  JAKE NOTE: Parameters Are Handled In The Form /~PartyPool/param1/param2/param3.
+    //  The .htaccess File Functions In Such A Way, That API_Handler Is Appended
     //  Transforms The GET['q'] Associative Array Into A Standard Array Via
     //  $parameters.
     if (isset($_GET['q']))
     {
+        echo "<p>Q Is Set</p>";
         //  JAKE NOTE: Split The URL Into It's Individual Components.
         $parameters = explode("/", $_GET['q']);
+
+        echo "<p>Parameter 1: ".$parameters[0]."</p>";
+        echo "<p>Parameter 2: ".$parameters[1]."</p>";
+        echo "<p>Parameter 3: ".$parameters[2]."</p>";
+
         if (strlen($this->apiStringToMatch) > 0 && count($parameters) > 0)
         {
             // JAKE NOTE: This Statement Checks Length Of The API If A Parameter 
@@ -108,8 +114,8 @@ class RestService
         }
     }
 
-    //  JAKE NOTE:  We Do Not Provide A String To apiStringToMatch, So Just Take All The URI Parameters And Assign Them
-    //  To An Array.
+    //  JAKE NOTE: If We Do Not Set Any Parameters Using The Format /~partypool/x/y/z, Assign The Parameters Via The
+    //  Standard GET Format (I.e. /~partypool/API_Handler.php?key1=value1&key2=value2
     else
     {
         //  TODO: Change $_GET To array() When Wayne's Method Is Correctly

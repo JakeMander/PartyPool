@@ -54,72 +54,95 @@ class PartyPool_API extends RestService
     
     public function performGet($url, $parameters, $requestBody, $accept)
     {
-        if ($parameters["ACTION"] == "TESTQUERY")
+        //  Check To See If Parameters Have Been Supplied.
+        if (isset($parameters))
         {
-            echo "<p>DATABASE QUERY REQUEST RECIEVED</p>";
-
-            if (isset($parameters["USER"]))
+            //  Check Which Web Service Function Is Being Called.
+            if (strtoupper($parameters[0]) == "LOGIN")
             {
-                $userValue = $parameters["USER"];
-                $userData = array();
+                echo "<p>LOGIN INITIALISED</p>";
 
-                $conn = pg_connect($this->connString);
-
-                //  Test For Connection Error.
-                if ($conn)
+                //  Determine Which Username Is Being Provided.
+                if (isset($parameters[1]))
                 {
-                    echo "<p>CONNECTION ESTABLISHED</p>";
+                    $userValue = $parameters[1];
 
-                    //  Attempt To Retrieve Data From The Database
-                    try
+                    $conn = pg_connect($this->connString);
+
+                    //  We Need To See If A Connection Can Be Established Before Running Any Queries.
+                    if ($conn)
                     {
-                        echo "<p>RUNNING QUERY</p>";
+                        echo "<p>CONNECTION ESTABLISHED</p>";
 
-                        //  Simple Test Query To Be Run.
-                        //  TODO: SANITISE INPUT!!!
-                        $result = pg_query($conn,"SELECT * FROM users WHERE username = '".$userValue."'ORDER BY username");
-
-                        if (!result)
+                        //  Attempt To Retrieve Data From The Database And Handle Any Exceptions That Occur.
+                        try
                         {
-                            echo"ERROR: QUERY HAS FAILED";
-                            exit;
+                            echo "<p>RUNNING QUERY</p>";
+
+                            //  Simple Test Query To Be Run.
+                            //  TODO: SANITISE INPUT!!!
+                            $sql = "SELECT * FROM users WHERE username = ".$userValue." ORDER BY username";
+                            $result = pg_query($conn, $sql);
+
+                            echo "<p>".$sql."</p>";
+
+                            //  If Query Fails, Return The Error Message Returned By Database.
+                            if (!result)
+                            {
+                                die (pg_last_error($conn));
+                            }
+
+                            //  While pg_fetch_row Has Rows To Read, Read The Next Returned Row And Echo Fields.
+                            if (pg_num_rows($result) != 0)
+                            {
+                                while ($row = pg_fetch_row($result))
+                                {
+                                    echo "<p>USERNAME: $row[0]\t PASSWORD: $row[1]</p>";
+                                }
+                                echo "<p>Number Of Returned Results: " . pg_num_rows($result) . "</p>";
+                            }
+
+                            else
+                            {
+                                echo"<p>No Rows Were Returned</p>";
+                            }
                         }
 
-                        while ($row = pg_fetch_row($result))
+                        catch(Exception $e)
                         {
-                            echo "<p>USERNAME: $row[0]\t PASSWORD: $row[1]</p>";
+                             echo "ERROR WITH QUERY: $e";
+                        }
+
+                        finally
+                        {
+                            $conn->close();
+                            echo "Connection Closed";
                         }
                     }
 
-                    catch(Exception $e)
+                    //  We Have Been Unable To Establish A Connection To The Database. Terminate Execution Of Script.
+                    else
                     {
-                         echo "ERROR WITH QUERY: $e";
-                    }
-
-                    finally 
-                    {
-                        $conn->close();
+                        die("<p>CONNECTION FAILED</p>");
                     }
                 }
 
+                //  User Parameter Has Been Left Empty. The Query Cannot Function So Terminate The Script.
                 else
                 {
-                    echo"<p>CONNECTION FAILED</p>";
+                    die("<p>NO USER SPECIFIED</p>");
                 }
-                
-                echo "<p>RETRIEVING USER DATA FOR $userValue</p>";
-
             }
 
             else
             {
-                echo "<p>NO USER SPECIFIED</p>";
+                echo "<p>FAILED</p>";
             }
         }
-        
+
         else
         {
-            echo "FAILED";
+            echo "<p> No Parameters Provided</p>";
         }
     }
 }

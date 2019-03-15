@@ -4,9 +4,6 @@
  *    Calls Wayne's Base Class Via The PartyPool API Constructor Which Seperates 
  *    All The Recieved Parameters And Handles Various Header Information Such As 
  *    The Request Type And Server URL.
- *
- *    The htacess File Is Currently Non-Functional At This Time Due To Security.
- *    Will Try And Resolve With Dave.
 */
 
     require "PartyPool_API.php";
