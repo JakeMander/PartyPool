@@ -146,4 +146,9 @@ class PartyPool_API extends RestService
         }
     }
 }
+
+public function performPost($url, $parameters, $requestBody, $accept)
+{
+
+}
 ?>
