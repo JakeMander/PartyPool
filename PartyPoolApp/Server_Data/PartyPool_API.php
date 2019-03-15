@@ -1,18 +1,27 @@
 <?php
-/**
+
+ /**
  * Created by PhpStorm.
  * User: Jake Mander
  * Date: 03/03/2019
  * Time: 19:42
- */
 
-/*
- *  All Requests Made To The Server Will Go Through The PartyPool API. Each Requests Invokes The Base Class Method
- *  handleRawRequest Which Strips The Components Embedded In The URL And Passes The Parameters On To The handleRequest
- *  method. This Then Determines The Type Of The HTTP Request And Then Ovverides The Appropriate Function.
+ *  NOTES:
+ *  Parameters Should, In A Standard HTTP GET Request, Be Sent To The Web Service In The Form:
+ *  www.commerce3.derby.ac.uk/~partypool?action=value&subaction=value
  *
+ *  Where ? Signifies The Start Of The GET Parameters, And & Is Used To
+ *  Chain Multiple Parameters Together. These Are Assembled Into "Key":"Value" Pairs.
  *
+ *  Wayne's Code Has Been Written In Such A Way, That The htaccess File Rewrites The URL In Such A Way, That The
+ *  String After ? Are Assigned To An Associative Array Key With The Value Of 'q'. Explode is Then Used To Split
+ *  These Parameters By "\" Through Accessing The String Stored In GET['q']. If The URL Is Stored In The Format:
  *
+ *  https://computing.derby.ac.uk/~partypool/x/y/z
+ *
+ *  Then q Stores "x/y/z" Then Explodes The String Via "/" To Create An Array With Values x, y and z. We Can Then
+ *  Use The Values To Determine What Action We Are To Take, And Which Values We Can Supply To Any SQL Queries We May
+ *  Need To Make.
  */
 
 require "RestService.php";
@@ -20,71 +29,46 @@ require "RestService.php";
 class PartyPool_API extends RestService
 {
 
+    //  Login Credentials For Our Commerce3 Database.
     private $connString = "host=localhost port=5432 dbname=pr_partypool user=pr_partypool password=kJVjC7z";
 
     public function __construct()
     {
-        //  Pass In An Empty String To Wayne's Service Class. We Do Not Need To
-        //  Compare The Root Of The URL.
-        
+        //  Pass In An Empty String To Wayne's Service Class. We Do Not Need To Compare The Root Of The URL.
         parent::__construct("");
-        echo "<p>PARENT CONSTRUCTED<p>";      
+        echo "PARENT CONSTRUCTED";
     }
-    
-    //  NOTES: Parameters Should, At Present, Be Sent To The Web Service In The 
-    //  Form:
-    //  
-    //  www.commerce3.derby.ac.uk/~partypool?action=value&subaction=value
-    //  
-    //  Where ? Signifies The Start Of The GET Parameters, And & Is Used To
-    //  Chain Multiple Parameters Together.
-    //
-    //  Wayne's Code Has Been Written In Such A Way, That The htaccess File Will
-    //  Assign All Values After ? To A Value Called 'q'. This Can Then Be
-    //  Accessed Via GET['q']. If The URL Is Stored In The Format:
-    //  
-    //  https://computing.derby.ac.uk/~partypool/x/y/z
-    //  
-    //  Then Q Stores "x/y/z" Then Explodes The String Via "/" To Create An
-    //  Array With Values x, y and z.
-    //  
-    //  However, We Currently Do Not Have Access To .htaccess Files On The
-    //  Server Due To Security. As Such, Use The Standard "?" Method To
-    //  Construct Requests For Now.
-    
+
     public function performGet($url, $parameters, $requestBody, $accept)
     {
-        //  Check To See If Parameters Have Been Supplied.
-        if (isset($parameters))
-        {
-            //  Check Which Web Service Function Is Being Called.
-            if (strtoupper($parameters[0]) == "LOGIN")
-            {
-                echo "<p>LOGIN INITIALISED</p>";
+        //  Group Functionality By Number Of Parameters For Easier Reading And More Logical Structure.
+        switch (count($parameters)) {
 
-                //  Determine Which Username Is Being Provided.
-                if (isset($parameters[1]))
+            case 1:
+                break;
+
+            case 2:
+
+                //  TODO: Remove Once App Is Running.
+                //  Test Function For Use In Browser. Checks Connection And Runs A Simple SELECT PostgreSQL Query
+                //  To Retrieve A TestUser Password.
+                if (strtoupper($parameters[0]) == "TESTLOGIN")
                 {
                     $userValue = $parameters[1];
-
                     $conn = pg_connect($this->connString);
 
-                    //  We Need To See If A Connection Can Be Established Before Running Any Queries.
+                    //  Test To See If A Connection Can Be Established
                     if ($conn)
                     {
-                        echo "<p>CONNECTION ESTABLISHED</p>";
-
                         //  Attempt To Retrieve Data From The Database And Handle Any Exceptions That Occur.
                         try
                         {
-                            echo "<p>RUNNING QUERY</p>";
-
-                            //  Simple Test Query To Be Run.
-                            //  TODO: SANITISE INPUT!!!
-                            $sql = "SELECT * FROM users WHERE username = ".$userValue." ORDER BY username";
-                            $result = pg_query($conn, $sql);
-
-                            echo "<p>".$sql."</p>";
+                            //  Statement To Retrieve The Associated Password Of A Supplied User.
+                            $sql = 'SELECT * FROM users WHERE username = $1 ORDER BY username';
+                            //  Ensure Our SQL Is Sanitised! Prepare The SQL Statement And Bind The Parameters We Supply
+                            //  Via The Array To The $1.
+                            pg_prepare($conn, "TestUserCheck", $sql);
+                            $result = pg_execute($conn, "TestUserCheck", array($userValue));
 
                             //  If Query Fails, Return The Error Message Returned By Database.
                             if (!result)
@@ -97,25 +81,26 @@ class PartyPool_API extends RestService
                             {
                                 while ($row = pg_fetch_row($result))
                                 {
-                                    echo "<p>USERNAME: $row[0]\t PASSWORD: $row[1]</p>";
+                                    echo "USERNAME: $row[0]\t PASSWORD: $row[1]";
                                 }
-                                echo "<p>Number Of Returned Results: " . pg_num_rows($result) . "</p>";
+
+                                echo "Number Of Returned Results: " . pg_num_rows($result) . "";
                             }
 
                             else
                             {
-                                echo"<p>No Rows Were Returned</p>";
+                                echo "No Rows Were Returned";
                             }
                         }
 
-                        catch(Exception $e)
+                        catch (Exception $e)
                         {
-                             echo "ERROR WITH QUERY: $e";
+                            echo "ERROR WITH QUERY: $e";
                         }
 
                         finally
                         {
-                            $conn->close();
+                            pg_close($conn);
                             echo "Connection Closed";
                         }
                     }
@@ -123,32 +108,99 @@ class PartyPool_API extends RestService
                     //  We Have Been Unable To Establish A Connection To The Database. Terminate Execution Of Script.
                     else
                     {
-                        die("<p>CONNECTION FAILED</p>");
+                        die("Connection Has Failed");
                     }
                 }
 
-                //  User Parameter Has Been Left Empty. The Query Cannot Function So Terminate The Script.
                 else
                 {
-                    die("<p>NO USER SPECIFIED</p>");
+                    echo "Invalid Parameter";
                 }
-            }
+            break;
 
-            else
-            {
-                echo "<p>FAILED</p>";
-            }
-        }
-
-        else
-        {
-            echo "<p> No Parameters Provided</p>";
+            default:
+                echo "Invalid Number Of Parameters Supplied";
+                break;
         }
     }
-}
 
-public function performPost($url, $parameters, $requestBody, $accept)
-{
+    public function performPost($url, $parameters, $requestBody, $accept)
+    {
+        switch (count($parameters))
+        {
+            case 1:
+                if (strtoupper($parameters[0]) == "LOGIN")
+                {
+                    echo "POST LOGIN DETECTED";
 
+                    //  Split The Credentials Passed Over Via The POST Body So The Service Can Handle Each Credential
+                    //  Individually.
+                    $jsonCredentials = json_decode($requestBody);
+
+                    //  If The Decoded JSON Data Has The Correct Key Values, Assign Associated Name Value To Variables
+                    //  For Processing.
+                    if (isset($jsonCredentials -> {'username'}) && isset($jsonCredentials -> {'password'}))
+                    {
+                        $username = $jsonCredentials->{'username'};
+                        $password = $jsonCredentials->{'password'};
+
+                        echo "Received Username:" . $username . "";
+                        echo "Received Password:" . $password . "";
+
+                        //  Pass In The Username And Password So We Can Check The Database For A Matching Pair.
+                        try
+                        {
+                            $conn = pg_connect($this->connString);
+                            $sql = 'SELECT username FROM users WHERE username = $1 AND password = $2';
+                            pg_prepare($conn, "Login", $sql);
+                            $result = pg_execute($conn, "Login", array($username, $password));
+
+                            if (!$result)
+                            {
+                                die("SQL Query Has Failed");
+                            }
+
+                            //  A Valid Login Should Only Yield One Matching Pair Of Data. Any Other Responses Are Either
+                            //  Invalid Credentials, Or Is A Invalid Query.
+                            if (pg_num_rows($result) != 1)
+                            {
+                                echo "Login Has Failed";
+                            }
+
+                            else
+                            {
+                                $row = pg_fetch_row($result);
+                                echo "Login Successful:";
+                                echo "USERNAME: $row[0]";
+                            }
+
+                            pg_close($conn);
+                        }
+
+                        catch(Exception $e)
+                        {
+                            die("An Error Has Occurred During The Login Process: ".$e);
+                        }
+
+                    }
+
+                    else
+                    {
+                        echo "JSON Keys Not Found In Body";
+                    }
+
+                }
+
+                else
+                {
+                    echo"Invalid Parameter";
+                }
+            break;
+
+            default:
+                echo "Invalid Number of Parameters Supplied";
+                break;
+        }
+    }
 }
 ?>
