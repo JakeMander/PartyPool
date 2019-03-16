@@ -25,6 +25,7 @@
  */
 
 require "RestService.php";
+require "Database_Classes/User.php";
 
 class PartyPool_API extends RestService
 {
@@ -144,8 +145,8 @@ class PartyPool_API extends RestService
                         $username = $jsonCredentials->{'username'};
                         $password = $jsonCredentials->{'password'};
 
-                        echo "Received Username:" . $username . "";
-                        echo "Received Password:" . $password . "";
+                        echo "Received Username:" . $username;
+                        echo "Received Password:" . $password;
 
                         //  Pass In The Username And Password So We Can Check The Database For A Matching Pair.
                         try
@@ -173,13 +174,16 @@ class PartyPool_API extends RestService
                                 echo "Login Successful:";
                                 echo "USERNAME: $row[0]";
                             }
-
-                            pg_close($conn);
                         }
 
                         catch(Exception $e)
                         {
                             die("An Error Has Occurred During The Login Process: ".$e);
+                        }
+
+                        finally
+                        {
+                            pg_close($conn);
                         }
 
                     }
@@ -189,6 +193,11 @@ class PartyPool_API extends RestService
                         echo "JSON Keys Not Found In Body";
                     }
 
+                }
+
+                else if (strtoupper($parameters[0]) == "CREATEACCOUNT")
+                {
+                    echo "POST CREATE ACCOUNT DETECTED";
                 }
 
                 else
