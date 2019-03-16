@@ -1,0 +1,27 @@
+#   The First Two Lines Of This Code Enable URL Rewrites.
+Options +FollowSymLinks
+RewriteEngine on
+
+#   Rewrite Conditions Act As If Else Statements. They Are Used To Determine If Any Rewrite
+#   Should Occur. They Can Be Used To Capture GET Variables.
+#
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !=/favicon.ico
+
+#   All Requests To Be Redirected To API_Handler.
+#   Anything Contained Within The Brackets Is A Regular Expression. Anything Contained Within Is Matched
+#   To A Variable ($) In The Order Of Which The Brackets Appear.
+#
+#   In This Example, The ^(.*)$ Indicates That The Expression Will Return One Capture Group (.*) IF, Between The
+#   Start And End Of The URL String, There Exists A Pattern Of Any Character Between 0 And Infinite Number
+#   Can Match Any Character, Any Number Of Times. The Rewrite Rule Then Redirects The Request To API_Hander.php And
+#   Assigns Any String That Appears After To A GET Variable Known As "q".
+RewriteRule ^(.*)$ API_Handler.php?q=$1 [L,QSA]
+
+#   A Note On Alphabetic Commands:
+#
+#   R = Redirect (Adding A Number Can Be Used To Singal A Redirect Code (e.g. 302 = "MOVED TEMPORARILY", 301 =
+#   "MOVED PERMENANTLY".
+#   L = Last (Tells Apache To Run No More Rewrite Rules).
+#   NC = No Case (Makes The Rule Case Insenstivie).
