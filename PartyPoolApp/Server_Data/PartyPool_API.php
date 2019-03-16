@@ -198,6 +198,72 @@ class PartyPool_API extends RestService
                 else if (strtoupper($parameters[0]) == "CREATEACCOUNT")
                 {
                     echo "POST CREATE ACCOUNT DETECTED";
+
+                    echo "Decoding Credentials";
+                    $jsonCredentials = json_decode($requestBody);
+
+                    if (isset($jsonCredentials -> {'username'}) && isset($jsonCredentials -> {'password'}))
+                    {
+                        echo "Credentials Assigned Locally";
+                        $username = $jsonCredentials->{'username'};
+                        $password = $jsonCredentials->{'password'};
+
+                        echo "Received Username:" . $username;
+                        echo "Received Password:" . $password;
+
+                        echo "Checking Database For Existing User: ".$username;
+
+                        //  Check To See If The Username Already Exists. Username Should Be Unique Across The Database.
+                        try
+                        {
+                            echo "Run Connection";
+                            $conn = pg_connect($this->connString);
+                            $sql = 'SELECT username FROM users WHERE username = $1 AND password = $2';
+                            pg_prepare($conn, "Login", $sql);
+                            $result = pg_execute($conn, "Login", array($username, $password));
+
+                            if (!$result)
+                            {
+                                die("SQL Query Has Failed");
+                            }
+
+                            //  A Valid Login Should Only Yield One Matching Pair Of Data. Any Other Responses Are Either
+                            //  Invalid Credentials, Or Is An Invalid Query.
+                            if (pg_num_rows($result) != 0)
+                            {
+                                echo "Create Account Has Failed";
+                                echo "Number Of Results Returned: ".(pg_num_rows($result));
+                            }
+
+                            //  Username Is Unique And Valid. Insert The Username/Password Pair Into Our Database.
+                            else
+                            {
+                                //  Close The Old Connection To Clear Up Previous Values.
+                                pg_close($conn);
+
+                                $conn = pg_connect($this->connString);
+                                $sql = 'INSERT INTO users (username, password) VALUES ($1, $2)';
+                                pg_prepare($conn, "Login", $sql);
+                                $result = pg_execute($conn, "Login", array($username, $password));
+                                echo "USER $username Has Been Added To The Database";
+                            }
+                        }
+
+                        catch (Exception $e)
+                        {
+                            die("An Error Has Occurred During The Create Account Process");
+                        }
+
+                        finally
+                        {
+                            pg_close($conn);
+                        }
+                    }
+
+                    else
+                    {
+                        echo "Invalid JSON Key Pairs Provided";
+                    }
                 }
 
                 else
