@@ -125,6 +125,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
+        /*
+         *  Cancel Variable Is Used To Determine If Login Attempt Creates The Asynchronous
+         *  Process That Makes The HTTP Request To Check Credentials Against The Database.
+         *
+         *  focusView Stores A Reference To The Component That Is To Be Selected To Receive
+         *  Input On The Interface Upon The User Entering An Invalid Input.
+        */
+
         boolean cancel = false;
         View focusView = null;
 
@@ -135,17 +143,22 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
-        // Check for a valid email address.
+        // Checks To See If Username Is Empty.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            //mEmailView.setError(getString(R.string.error_invalid_email));
+        }
+
+        //  Run The isEmailValid Method. This Defines Our Criteria For A Valid Email And Validaites
+        //  Input Against It.
+        else if (!isEmailValid(email)) {
             mEmailView.setError("Username should be 6-12 characters");
             focusView = mEmailView;
             cancel = true;
         }
+
+        //  Hardcoded User Account. If Input Is Not Equal To This, Login Fails.
         else if(!email.equals("testuser") || !password.equals("password"))
         {
             mEmailView.setError("Incorrect Credentials");
