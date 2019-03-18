@@ -20,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,21 +31,31 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.net.URL;
 
-//import static android.Manifest.permission.READ_CONTACTS;
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * A login screen that offers login via email/password.
  */
+
 public class LoginActivity extends AppCompatActivity {
-
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    //private static final int REQUEST_READ_CONTACTS = 0;
-
     /**
      * A dummy authentication store containing known user names and passwords.
      * TODO: remove after connecting to a real authentication system.
@@ -63,14 +74,13 @@ public class LoginActivity extends AppCompatActivity {
     private View mProgressView;
     private View mLoginFormView;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        //populateAutoComplete();
 
         Button button1 = (Button) findViewById(R.id.button);
         button1.setOnClickListener( new OnClickListener() {
@@ -183,10 +193,8 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    //  Method Defines Our Own Criteria For What Makes A Valid Username.
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        //return email.contains("@");
-
         return (email.length() >= 6 && email.length() <= 12);
     }
 
@@ -230,7 +238,7 @@ public class LoginActivity extends AppCompatActivity {
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
-    
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -240,20 +248,59 @@ public class LoginActivity extends AppCompatActivity {
         private final String mEmail;
         private final String mPassword;
 
+        //  Reference To The Server And The Function We Want To Invoke Via The LOGIN parameter.
+        //  This Will Not Change, So Define It As final.
+        private final String mUrl = "https://computing.derby.ac.uk/~partypool/LOGIN";
+
+        private String mResponseMessage = "";
+        private String mResponseBody = "";
+
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
         }
 
+        //  Upon Initialisation And Execution Of The Asynchronous Task, We Need To Set Up Our
+        //  Connection And Run Our Query Which Will Return The Credentials Requested From The Server.
         @Override
         protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
 
+            // TODO: attempt authentication against a network service.
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+                //  Open Our Connection To Our Commerce3 Server.
+                URL url = new URL(mUrl);
+
+                HttpURLConnection connectionToServer = (HttpURLConnection) url.openConnection();
+                connectionToServer.setDoOutput(true);
+                connectionToServer.setDoInput(true);
+                connectionToServer.setRequestMethod("POST");
+                connectionToServer.setRequestProperty("Content=Type", "application/json;" +
+                        "charset=utf-8");
+
+                //  Set The Body Of Our Post Request To The JSON Encoded Credentials. This Needs To
+                //  Be In Proper JSON Format In Order For The Web Service To Read The Credentials
+                //  Properly. Once Complete, Dispatch The Message Across The Network.
+                try {
+                    JSONObject credentials = buildLoginJSONRequest();
+                    setPostRequestContent(connectionToServer, credentials);
+                    connectionToServer.connect();
+
+                    mResponseMessage = connectionToServer.getResponseMessage();
+                    mResponseBody = receiveLoginResponse(connectionToServer);
+                    connectionToServer.disconnect();
+                }
+
+                catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+            catch (IOException e) {
+                e.printStackTrace();
             }
 
             for (String credential : DUMMY_CREDENTIALS) {
@@ -277,7 +324,9 @@ public class LoginActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(LoginActivity.this, TestActivity.class);
                 myIntent.putExtra("PASSDATA",mEmail.toString());
                 LoginActivity.this.startActivity(myIntent);
-            } else {
+            }
+
+            else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));
                 mPasswordView.requestFocus();
             }
@@ -289,7 +338,54 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(false);
         }
 
+        //  Method To Build Our JSON Body. This Will Be Sent To The Web Service And Passed To The
+        //  SQL Query.
+        private JSONObject buildLoginJSONRequest() throws JSONException{
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.accumulate("username", mEmail);
+            jsonObject.accumulate("password", mPassword);
 
+            return jsonObject;
+        }
+
+        //  This Function Dispatches Any JSONEncoded Data To The Server For Processing.
+        private void setPostRequestContent(HttpURLConnection conn, JSONObject jsonCredentials)
+            throws IOException {
+
+            //  Establish The Stream We Are Sending Our Data Across As Well As The Writer Which Is
+            //  Encoding The Data We Provide It.
+            OutputStream output = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter
+                    (output, "UTF-8"));
+
+            writer.write(jsonCredentials.toString());
+            writer.flush();
+            writer.close();
+            output.close();
+        }
+
+        //  Returns The Response Received From The HTTP Request.
+        private String receiveLoginResponse (HttpURLConnection conn) throws IOException {
+
+            String line = "";
+            String result = "";
+
+            //  Set Up A Stream Ready To Receive The HTTP Response.
+            InputStream inputStream = conn.getInputStream();
+            BufferedReader loginRequestReader = new BufferedReader(new InputStreamReader
+                    (inputStream, "iso-8859-1"));
+
+            //  While There Is Data To Read, Read Each Line And Append To The Result.
+            while ((line = loginRequestReader.readLine())!= null){
+                result += line;
+            }
+
+            //  Clean Up Our Resources And Then Send Back Return The Response Body.
+            loginRequestReader.close();
+            inputStream.close();
+
+            return result;
+        }
     }
 }
 

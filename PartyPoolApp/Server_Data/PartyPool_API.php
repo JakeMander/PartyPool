@@ -45,9 +45,6 @@ class PartyPool_API extends RestService
         //  Group Functionality By Number Of Parameters For Easier Reading And More Logical Structure.
         switch (count($parameters)) {
 
-            case 1:
-                break;
-
             case 2:
 
                 //  TODO: Remove Once App Is Running.
