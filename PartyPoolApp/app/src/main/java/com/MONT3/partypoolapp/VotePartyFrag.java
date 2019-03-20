@@ -22,7 +22,8 @@ private ImageView albumThree;
 private ImageView albumFour;
 private TextView luckyTxt;
 
-    public VotePartyFrag() {
+    public VotePartyFrag()
+    {
         // Required empty public constructor
     }
 
