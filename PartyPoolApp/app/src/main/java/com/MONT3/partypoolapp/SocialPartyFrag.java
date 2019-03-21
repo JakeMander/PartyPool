@@ -24,14 +24,17 @@ public class SocialPartyFrag extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_social_party, container, false);
-        String[] peepleOnMenu = {"BEANS", "EGGS", "BACON","SAUSAGES"};
 
+
+        View view = inflater.inflate(R.layout.fragment_social_party, container, false);
+        ListView lst;
+        String[] peepleOnMenu = {"DAVE", "KEV", "JAMES","HARRY","Pingu"};
+        //Integer[] imgid = {R.drawable.profile_1, R.drawable.profile_2,R.drawable.profile_3, R.drawable.profile_4, R.drawable.profile_5};
         ListView listView = (ListView) view.findViewById(R.id.people_list);
 
 
         ArrayAdapter<String> listviewAdapter = new ArrayAdapter<String>(
-                getActivity(), android.R.layout.simple_list_item_1,peepleOnMenu);
+                getActivity(), android.R.layout.simple_list_item_activated_1,peepleOnMenu);
 
         listView.setAdapter(listviewAdapter);
         // Inflate the layout for this fragment
