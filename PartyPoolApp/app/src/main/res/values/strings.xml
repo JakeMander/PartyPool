@@ -37,6 +37,10 @@
     <string name="view_profile">View Profile</string>
     <string name="log_out">Log Out</string>
     <string name="lucky_text">I\'m Feeling Lucky!</string>
+    <string name="guestPartySongTitle">Song Name</string>
+    <string name="guestPartyArtistAlbum">Artist - Album</string>
+    <string name="guestPartyName">Party Name: </string>
+    <string name="guestPartyTimer">Next Vote In: </string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
