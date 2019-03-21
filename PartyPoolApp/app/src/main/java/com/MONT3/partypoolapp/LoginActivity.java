@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -45,11 +46,20 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.net.URL;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 /**
  * A login screen that offers login via email/password.
@@ -265,15 +275,42 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
 
-            // TODO: attempt authentication against a network service.
+            try {
+                String line = "";
+                String result = "";
+
+                URL url = new URL("https://computing.derby.ac.uk/~partypool/LOGIN");
+                HttpURLConnection testConn = (HttpsURLConnection) url.openConnection();
+
+                testConn.setRequestMethod("POST");
+                testConn.setDoOutput(true);
+                testConn.setRequestProperty( "Content-type", "application/x-www-form-urlencoded");
+                testConn.setRequestProperty( "Accept", "*/*" );
+
+
+
+                InputStream inputStream = testConn.getInputStream();
+                BufferedReader streamReader = new BufferedReader(new InputStreamReader
+                        (inputStream,"iso-8859-1" ));
+
+                while ((line = streamReader.readLine()) != null){
+                    result += line;
+                }
+            }
+
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+
             try {
                 //  Open Our Connection To Our Commerce3 Server.
                 URL url = new URL(mUrl);
+                HttpURLConnection connectionToServer = (HttpsURLConnection) url.openConnection();
 
-                HttpURLConnection connectionToServer = (HttpURLConnection) url.openConnection();
                 connectionToServer.setDoOutput(true);
                 connectionToServer.setDoInput(true);
-                connectionToServer.setRequestMethod("POST");
+                connectionToServer.setRequestMethod("GET");
                 connectionToServer.setRequestProperty("Content=Type", "application/json;" +
                         "charset=utf-8");
 
@@ -364,7 +401,7 @@ public class LoginActivity extends AppCompatActivity {
             output.close();
         }
 
-        //  Returns The Response Received From The HTTP Request.
+        //  Returns The Response Received From The HTTPS Request.
         private String receiveLoginResponse (HttpURLConnection conn) throws IOException {
 
             String line = "";

@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3850efe4-5a9d-4ab9-9961-c3f96ba2e233" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../app/src/main/res/xml/network_security_config.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.htaccess" beforeDir="false" afterPath="$PROJECT_DIR$/.htaccess" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PartyPool_API.php" beforeDir="false" afterPath="$PROJECT_DIR$/PartyPool_API.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/AccountCreation.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/AccountCreation.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/LoginActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/TestActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/TestActivity.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -14,12 +17,21 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf>
-      <file pinned="false" current-in-tab="true">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PartyPool_API.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+            <state relative-caret-position="-943">
+              <caret line="47" selection-start-line="47" selection-end-line="47" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.htaccess">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -35,13 +47,14 @@
         <option value="$PROJECT_DIR$/RestService.php" />
         <option value="$USER_HOME$/OneDrive - University of Derby/Year 2/Work/Year_2/Application Development/Week_4/Exercises/getchapters.php" />
         <option value="$PROJECT_DIR$/PartyPool_API.php" />
+        <option value="$PROJECT_DIR$/.htaccess" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-9" />
+    <option name="x" value="-10" />
     <option name="width" value="1095" />
-    <option name="height" value="1039" />
+    <option name="height" value="1040" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -49,7 +62,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -61,6 +73,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -97,17 +110,17 @@
       <workItem from="1552422229633" duration="1248000" />
       <workItem from="1552423549426" duration="1392000" />
       <workItem from="1552862639084" duration="1381000" />
+      <workItem from="1552933878515" duration="292000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19185000" />
+    <option name="totallyTimeSpent" value="19477000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20255864" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.20536913" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -164,13 +177,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.htaccess">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/RestService.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1462">
@@ -200,8 +206,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PartyPool_API.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="48" lean-forward="true" selection-start-line="48" selection-end-line="48" />
+        <state relative-caret-position="-943">
+          <caret line="47" selection-start-line="47" selection-end-line="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.htaccess">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
         </state>
       </provider>
     </entry>

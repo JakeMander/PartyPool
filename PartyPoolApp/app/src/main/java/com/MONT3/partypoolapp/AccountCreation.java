@@ -64,15 +64,19 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
     private View mProgressView;
     private View mLoginFormView;
 
+
+    //  On Creation Of The Activity, Set The View To The "account_creation", And Assign All The
+    //  View Components (I.e. Text Boxes, Buttons etc...) To Their Respective UI Reference.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_creation);
+
         // Set up the login form.
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.create_username);
-        //populateAutoComplete();
-
         mPasswordView = (EditText) findViewById(R.id.create_password);
+
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -83,7 +87,6 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
                 return false;
             }
         });
-
 
         mRePasswordView = (EditText) findViewById(R.id.create_re_password);
         mRePasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -96,14 +99,6 @@ public class AccountCreation extends AppCompatActivity implements LoaderCallback
                 return false;
             }
         });
-
-
-
-
-
-
-
-
 
         Button mEmailSignInButton = (Button) findViewById(R.id.sign_up_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
