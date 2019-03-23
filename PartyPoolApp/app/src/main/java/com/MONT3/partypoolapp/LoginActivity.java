@@ -3,6 +3,7 @@ package com.MONT3.partypoolapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.renderscript.ScriptGroup;
@@ -31,7 +32,9 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -181,20 +184,13 @@ public class LoginActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        //  Hardcoded User Account. If Input Is Not Equal To This, Login Fails.
-        else if(!email.equals("testuser") || !password.equals("password"))
-        {
-            mEmailView.setError("Incorrect Credentials");
-            mPasswordView.setError("Incorrect Credentials");
-            focusView = mEmailView;
-            cancel = true;
-        }
-
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
+        }
+
+        else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
@@ -274,78 +270,71 @@ public class LoginActivity extends AppCompatActivity {
         //  Connection And Run Our Query Which Will Return The Credentials Requested From The Server.
         @Override
         protected Boolean doInBackground(Void... params) {
-
             try {
+                //  Define The Location Of Our Web Service Function And Create A Connection To
+                //  The Web Service.
+                final URL url = new URL("https://computing.derby.ac.uk/~partypool/LOGIN");
+                HttpURLConnection testConn = (HttpsURLConnection) url.openConnection();
+
+                //  Define Our Request As "POST" and Enable Output And Input. Allow For HTTP Read/
+                //  Write And Specify The Type Of Data We Are Handling.
+                testConn.setRequestMethod("POST");
+                testConn.setDoOutput(true);
+                testConn.setDoInput(true);
+                testConn.setRequestProperty( "Content-type", "application/json");
+
+                //  Build Our JSON Object Based On The Password And Username We Have Received.
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.accumulate("username", mEmail);
+                jsonObject.accumulate("password", mPassword);
+
+                //  Send Our HTTP Request Off To The Webservice Via A BufferedWriter.
+                OutputStream output = testConn.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter
+                        (output, "UTF-8"));
+
+                writer.write(jsonObject.toString());
+                writer.flush();
+                writer.close();
+
+                //  Receive HTTP Request Via A Buffered Reader.
                 String line = "";
                 String result = "";
 
-                URL url = new URL("https://computing.derby.ac.uk/~partypool/LOGIN");
-                HttpURLConnection testConn = (HttpsURLConnection) url.openConnection();
-
-                testConn.setRequestMethod("POST");
-                testConn.setDoOutput(true);
-                testConn.setRequestProperty( "Content-type", "application/x-www-form-urlencoded");
-                testConn.setRequestProperty( "Accept", "*/*" );
-
-
-
                 InputStream inputStream = testConn.getInputStream();
                 BufferedReader streamReader = new BufferedReader(new InputStreamReader
-                        (inputStream,"iso-8859-1" ));
+                        (inputStream, "iso-8859-1"));
 
-                while ((line = streamReader.readLine()) != null){
+                while ((line = streamReader.readLine()) != null) {
                     result += line;
                 }
-            }
 
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+                //  Creates A General JSON Object To Hold All The JSON Data. We Can Then Parse
+                //  Each Individual Component From This.
+                JSONObject receivedCredentials = new JSONObject(result);
+                JSONArray jsonResponse = receivedCredentials.getJSONArray("jsonResponse");
 
-            try {
-                //  Open Our Connection To Our Commerce3 Server.
-                URL url = new URL(mUrl);
-                HttpURLConnection connectionToServer = (HttpsURLConnection) url.openConnection();
+                String status = jsonResponse.getString(0);
 
-                connectionToServer.setDoOutput(true);
-                connectionToServer.setDoInput(true);
-                connectionToServer.setRequestMethod("GET");
-                connectionToServer.setRequestProperty("Content=Type", "application/json;" +
-                        "charset=utf-8");
-
-                //  Set The Body Of Our Post Request To The JSON Encoded Credentials. This Needs To
-                //  Be In Proper JSON Format In Order For The Web Service To Read The Credentials
-                //  Properly. Once Complete, Dispatch The Message Across The Network.
-                try {
-                    JSONObject credentials = buildLoginJSONRequest();
-                    setPostRequestContent(connectionToServer, credentials);
-                    connectionToServer.connect();
-
-                    mResponseMessage = connectionToServer.getResponseMessage();
-                    mResponseBody = receiveLoginResponse(connectionToServer);
-                    connectionToServer.disconnect();
+                //  If First Index Is No, Login Has Failed. Display A Toast To Inform User And
+                //  Detail Reason.
+                if (status.equals("NO"))
+                {
+                    return false;
                 }
 
-                catch (JSONException e) {
-                    e.printStackTrace();
+                else
+                {
+                    return true;
                 }
-            }
-
-            catch (MalformedURLException e) {
-                e.printStackTrace();
             }
 
             catch (IOException e) {
                 e.printStackTrace();
             }
 
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
+            catch (JSONException e){
+                e.printStackTrace();
             }
 
             // TODO: register the new account here.

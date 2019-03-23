@@ -26,6 +26,7 @@
 
 require "RestService.php";
 require "Database_Classes/User.php";
+require "JsonResponse.php";
 
 class PartyPool_API extends RestService
 {
@@ -37,7 +38,6 @@ class PartyPool_API extends RestService
     {
         //  Pass In An Empty String To Wayne's Service Class. We Do Not Need To Compare The Root Of The URL.
         parent::__construct("");
-        echo "PARENT CONSTRUCTED";
     }
 
     public function performGet($url, $parameters, $requestBody, $accept)
@@ -71,53 +71,66 @@ class PartyPool_API extends RestService
                             //  If Query Fails, Return The Error Message Returned By Database.
                             if (!result)
                             {
-                                die (pg_last_error($conn));
+                                die (json_encode(new JsonResponse("NO", "Query Has Failed",
+                                    null)));
                             }
 
                             //  While pg_fetch_row Has Rows To Read, Read The Next Returned Row And Echo Fields.
                             if (pg_num_rows($result) != 0)
                             {
+                                $users = array();
+
                                 while ($row = pg_fetch_row($result))
                                 {
-                                    echo "USERNAME: $row[0]\t PASSWORD: $row[1]";
+                                    $user = new User($row[0], $row[1]);
+
+                                    echo "Row[0]:".$row[0];
+                                    echo "Row[1]:".$row[1];
+
+                                    array_push($users, $user);
+                                    echo"User1: ".$user->getUsername();
+                                    echo"User2: ".$user->getPassword();
+
                                 }
 
-                                echo "Number Of Returned Results: " . pg_num_rows($result) . "";
+                                echo json_encode(new JsonResponse("YES", "OK", $users));
                             }
 
                             else
                             {
-                                echo "No Rows Were Returned";
+                                echo json_encode(new JsonResponse("NO", "Query Has Returned 0 Values",
+                                    null));
                             }
                         }
 
                         catch (Exception $e)
                         {
-                            echo "ERROR WITH QUERY: $e";
+                            echo json_encode(new JsonResponse("NO","ERROR WITH QUERY: $e",
+                                null));
                         }
 
                         finally
                         {
                             pg_close($conn);
-                            echo "Connection Closed";
                         }
                     }
 
                     //  We Have Been Unable To Establish A Connection To The Database. Terminate Execution Of Script.
                     else
                     {
-                        die("Connection Has Failed");
+                        die(json_encode(new JsonResponse("NO","Connection Has Failed",
+                            null)));
                     }
                 }
 
                 else
                 {
-                    echo "Invalid Parameter";
+                    json_encode(new JsonResponse("NO","Invalid Parameter Supplied", null));
                 }
             break;
 
             default:
-                echo "Invalid Number Of Parameters Supplied";
+                json_encode(new JsonResponse("NO","Invalid Number Of Parameters Supplied", null));
                 break;
         }
     }
@@ -129,8 +142,6 @@ class PartyPool_API extends RestService
             case 1:
                 if (strtoupper($parameters[0]) == "LOGIN")
                 {
-                    echo "POST LOGIN DETECTED";
-
                     //  Split The Credentials Passed Over Via The POST Body So The Service Can Handle Each Credential
                     //  Individually.
                     $jsonCredentials = json_decode($requestBody);
@@ -142,9 +153,6 @@ class PartyPool_API extends RestService
                         $username = $jsonCredentials->{'username'};
                         $password = $jsonCredentials->{'password'};
 
-                        echo "Received Username:" . $username;
-                        echo "Received Password:" . $password;
-
                         //  Pass In The Username And Password So We Can Check The Database For A Matching Pair.
                         try
                         {
@@ -155,27 +163,31 @@ class PartyPool_API extends RestService
 
                             if (!$result)
                             {
-                                die("SQL Query Has Failed");
+                                //
+                                die (json_encode(new JsonResponse("NO",
+                                    "Query Has Failed", null)));
                             }
 
                             //  A Valid Login Should Only Yield One Matching Pair Of Data. Any Other Responses Are Either
                             //  Invalid Credentials, Or Is A Invalid Query.
                             if (pg_num_rows($result) != 1)
                             {
-                                echo "Login Has Failed";
+                                echo json_encode(new JsonResponse("NO",
+                                    "Login Has Failed", null));;
                             }
 
                             else
                             {
                                 $row = pg_fetch_row($result);
-                                echo "Login Successful:";
-                                echo "USERNAME: $row[0]";
+                                echo json_encode(new JsonResponse("YES",
+                                    "OK", $row[0]));
                             }
                         }
 
                         catch(Exception $e)
                         {
-                            die("An Error Has Occurred During The Login Process: ".$e);
+                            die (json_encode(new JsonResponse("NO",
+                            "Query Has Failed For The Following Reason".$e, null)));
                         }
 
                         finally
@@ -187,33 +199,24 @@ class PartyPool_API extends RestService
 
                     else
                     {
-                        echo "JSON Keys Not Found In Body";
+                        echo (json_encode(new JsonResponse("NO",
+                            "Missing Credentials", null)));
                     }
 
                 }
 
                 else if (strtoupper($parameters[0]) == "CREATEACCOUNT")
                 {
-                    echo "POST CREATE ACCOUNT DETECTED";
-
-                    echo "Decoding Credentials";
                     $jsonCredentials = json_decode($requestBody);
 
                     if (isset($jsonCredentials -> {'username'}) && isset($jsonCredentials -> {'password'}))
                     {
-                        echo "Credentials Assigned Locally";
                         $username = $jsonCredentials->{'username'};
                         $password = $jsonCredentials->{'password'};
-
-                        echo "Received Username:" . $username;
-                        echo "Received Password:" . $password;
-
-                        echo "Checking Database For Existing User: ".$username;
 
                         //  Check To See If The Username Already Exists. Username Should Be Unique Across The Database.
                         try
                         {
-                            echo "Run Connection";
                             $conn = pg_connect($this->connString);
                             $sql = 'SELECT username FROM users WHERE username = $1 AND password = $2';
                             pg_prepare($conn, "Login", $sql);
@@ -221,15 +224,18 @@ class PartyPool_API extends RestService
 
                             if (!$result)
                             {
-                                die("SQL Query Has Failed");
+                                die (json_encode(new JsonResponse("NO", "Query Has Failed",
+                                    null)));
                             }
 
                             //  A Valid Login Should Only Yield One Matching Pair Of Data. Any Other Responses Are Either
                             //  Invalid Credentials, Or Is An Invalid Query.
                             if (pg_num_rows($result) != 0)
                             {
-                                echo "Create Account Has Failed";
-                                echo "Number Of Results Returned: ".(pg_num_rows($result));
+                                echo json_encode(new JsonResponse("NO", "Create Account Has Failed",
+                                    null));
+
+                                pg_close($conn);
                             }
 
                             //  Username Is Unique And Valid. Insert The Username/Password Pair Into Our Database.
@@ -242,13 +248,15 @@ class PartyPool_API extends RestService
                                 $sql = 'INSERT INTO users (username, password) VALUES ($1, $2)';
                                 pg_prepare($conn, "Login", $sql);
                                 $result = pg_execute($conn, "Login", array($username, $password));
-                                echo "USER $username Has Been Added To The Database";
+                                echo json_encode(new JsonResponse("YES", "Account Created",
+                                    null));
                             }
                         }
 
                         catch (Exception $e)
                         {
-                            die("An Error Has Occurred During The Create Account Process");
+                            die(json_encode(new JsonResponse("NO", "Query Has Failed For The Following
+                            Reason", null)));
                         }
 
                         finally
@@ -259,18 +267,19 @@ class PartyPool_API extends RestService
 
                     else
                     {
-                        echo "Invalid JSON Key Pairs Provided";
+                        echo (json_encode(new JsonResponse("NO", "Missing Credentials", null)));
                     }
                 }
 
                 else
                 {
-                    echo"Invalid Parameter";
+                    echo (json_encode(new JsonResponse("NO", "Invalid Parameter", null)));
                 }
             break;
 
             default:
-                echo "Invalid Number of Parameters Supplied";
+                echo (json_encode(new JsonResponse("NO", "Invalid Number Of Parameters",
+                    null)));
                 break;
         }
     }

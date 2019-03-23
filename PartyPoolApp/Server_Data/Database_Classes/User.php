@@ -15,13 +15,11 @@ class User
     //  As Well As General Administration.
     public $username;
     public $password;
-    public $created;
 
-    public function __construct($usernameIn, $passwordIn, $createdIn)
+    public function __construct($usernameIn, $passwordIn)
     {
-        $username = $usernameIn;
-        $password = $passwordIn;
-        $created = $createdIn;
+        $this -> username = $usernameIn;
+        $this -> password = $passwordIn;
     }
 
     //  Accessors To Retrieve Users Information, As Well As Access The Appropriate Table In The API.
@@ -40,9 +38,14 @@ class User
         return $this->password;
     }
 
-    public function getCreated()
+    public function setUsername($usernameIn)
     {
-        return $this->created;
+        $this->username = $usernameIn;
+    }
+
+    public function setPassword($passwordIn)
+    {
+        $this->password = $passwordIn;
     }
 }
 

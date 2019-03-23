@@ -7,9 +7,7 @@
 */
 
     require "PartyPool_API.php";
-   
-    echo"<p>PartyPool_API Instantiated</p>";
+
     $service = new PartyPool_API();
-    echo"<p>handleRawRequest Called</p>";
     $service -> handleRawRequest();
 ?>

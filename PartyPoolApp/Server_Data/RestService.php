@@ -59,9 +59,6 @@ class RestService
     //  Request Types Available For Processing.
     $this->supportedMethods = "GET, PUT, POST, DELETE";
     $this->apiStringToMatch = $apiStringToMatch;
-    
-    echo "<p>String To Match: ".$apiStringToMatch."</p>";
-    echo "<p>Supported Methods: ".$this->supportedMethods."</p>";
   }
 
   public function handleRawRequest() 
@@ -69,24 +66,18 @@ class RestService
     //  Get The URL Of The Current PHP File. Essentially:
     //  https://computing.derby.ac.uk/~partypool/ParamnN1/ParamnN2/ParamNx
     $url = $this->getFullUrl();
-    echo "<p>URL Of Called File: ".$url."</p>";
 
     //  JAKE NOTE: Method Determines Which Method The HTTP Request Has Been Submitted As.
     $method = $_SERVER['REQUEST_METHOD'];
-    echo "<p>Request Method: ".$method."</p>";
 
     // JAKE NOTE: Method Gets Body Of The HTTP Request.
     $requestBody = file_get_contents('php://input');
-    echo "<p>Request Body: ".$requestBody."</p>";
 
     // Look for any parameters appended to the URL in the form
     // "q=xyz".  These will be the parameters that determine which
     // functions are used for each HTTP method.  For example, a URL 
     // In the form q=books/x/y will see 'books', 'x' and 'y' placed 
     // in the first three elements of the array $parameters
-    //
-    //  JAKE NOTE: Identify Any Parameters Passed Over Via GET.
-    echo "Identified GET Parameters: ".var_dump($_GET);
     
     //  JAKE NOTE: Parameters Are Handled In The Form /~PartyPool/param1/param2/param3.
     //  The .htaccess File Functions In Such A Way, That API_Handler Is Appended
@@ -94,13 +85,8 @@ class RestService
     //  $parameters.
     if (isset($_GET['q']))
     {
-        echo "<p>Q Is Set</p>";
         //  JAKE NOTE: Split The URL Into It's Individual Components.
         $parameters = explode("/", $_GET['q']);
-
-        echo "<p>Parameter 1: ".$parameters[0]."</p>";
-        echo "<p>Parameter 2: ".$parameters[1]."</p>";
-        echo "<p>Parameter 3: ".$parameters[2]."</p>";
 
         if (strlen($this->apiStringToMatch) > 0 && count($parameters) > 0)
         {
@@ -118,14 +104,8 @@ class RestService
     //  Standard GET Format (I.e. /~partypool/API_Handler.php?key1=value1&key2=value2
     else
     {
-        //  TODO: Change $_GET To array() When Wayne's Method Is Correctly
-        //  Implemented.
-        
-        echo "Parameters: Parameters Reached";
         $parameters = $_GET;
-        
-        echo "<p>Number Of GET Parameters: ".count($_GET)."</p>";
-        echo "<p>Parameters:</p>";
+
         foreach($parameters as $key => $value)
         {
             echo "Key: ".$key." Value: ".$value;
@@ -143,7 +123,7 @@ class RestService
     {
       $accept = "";
     }
-    echo "<p>HTTP Accept Header: ".$accept."</p>";
+
     $this->handleRequest($url, $method, $parameters, $requestBody, $accept);
   }
 
