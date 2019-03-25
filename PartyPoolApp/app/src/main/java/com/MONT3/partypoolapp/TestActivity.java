@@ -10,13 +10,24 @@ import android.widget.TextView;
 public class TestActivity extends AppCompatActivity{
 private Button buttonJoin;
 private Button buttonCreate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
         TextView tv = findViewById(R.id.textView2);
-        tv.setText("Welcome, " + getIntent().getStringExtra("PASSDATA"));
+
+        //  If User hHas Reached Splash Page From The Login Screen, Pull Data From The Associated
+        //  Intent, Else Pull The Data From The Create Account Screen Instead.
+        if (getIntent().hasExtra("LOGINDATA")) {
+            tv.setText("Welcome, " + getIntent().getStringExtra("LOGINDATA"));
+        }
+
+        else{
+            tv.setText("Welcome, " + getIntent().getStringExtra("CREATEDATA"));
+        }
+
         buttonJoin = findViewById(R.id.button2);
         buttonCreate = findViewById(R.id.button3);
 
