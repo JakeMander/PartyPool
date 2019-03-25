@@ -69,13 +69,7 @@ import javax.net.ssl.X509TrustManager;
  */
 
 public class LoginActivity extends AppCompatActivity {
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -253,17 +247,12 @@ public class LoginActivity extends AppCompatActivity {
 
         private final String mEmail;
         private final String mPassword;
-
-        //  Reference To The Server And The Function We Want To Invoke Via The LOGIN parameter.
-        //  This Will Not Change, So Define It As final.
-        private final String mUrl = "https://computing.derby.ac.uk/~partypool/LOGIN";
-
-        private String mResponseMessage = "";
-        private String mResponseBody = "";
+        private String mError;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
             mPassword = password;
+            mError = "";
         }
 
         //  Upon Initialisation And Execution Of The Asynchronous Task, We Need To Set Up Our
@@ -274,14 +263,14 @@ public class LoginActivity extends AppCompatActivity {
                 //  Define The Location Of Our Web Service Function And Create A Connection To
                 //  The Web Service.
                 final URL url = new URL("https://computing.derby.ac.uk/~partypool/LOGIN");
-                HttpURLConnection testConn = (HttpsURLConnection) url.openConnection();
+                HttpURLConnection serverConnection = (HttpsURLConnection) url.openConnection();
 
                 //  Define Our Request As "POST" and Enable Output And Input. Allow For HTTP Read/
                 //  Write And Specify The Type Of Data We Are Handling.
-                testConn.setRequestMethod("POST");
-                testConn.setDoOutput(true);
-                testConn.setDoInput(true);
-                testConn.setRequestProperty( "Content-type", "application/json");
+                serverConnection.setRequestMethod("POST");
+                serverConnection.setDoOutput(true);
+                serverConnection.setDoInput(true);
+                serverConnection.setRequestProperty( "Content-type", "application/json");
 
                 //  Build Our JSON Object Based On The Password And Username We Have Received.
                 JSONObject jsonObject = new JSONObject();
@@ -289,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
                 jsonObject.accumulate("password", mPassword);
 
                 //  Send Our HTTP Request Off To The Webservice Via A BufferedWriter.
-                OutputStream output = testConn.getOutputStream();
+                OutputStream output = serverConnection.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter
                         (output, "UTF-8"));
 
@@ -301,13 +290,16 @@ public class LoginActivity extends AppCompatActivity {
                 String line = "";
                 String result = "";
 
-                InputStream inputStream = testConn.getInputStream();
+                InputStream inputStream = serverConnection.getInputStream();
                 BufferedReader streamReader = new BufferedReader(new InputStreamReader
                         (inputStream, "iso-8859-1"));
 
                 while ((line = streamReader.readLine()) != null) {
                     result += line;
                 }
+
+                //  Ensure Our Connection Is Properly Terminated.
+                serverConnection.disconnect();
 
                 //  Creates A General JSON Object To Hold All The JSON Data. We Can Then Parse
                 //  Each Individual Component From This.
@@ -316,28 +308,26 @@ public class LoginActivity extends AppCompatActivity {
 
                 String status = jsonResponse.getString(0);
 
-                //  If First Index Is No, Login Has Failed. Display A Toast To Inform User And
-                //  Detail Reason.
+                //  If First Index Is No, Login Has Failed. Set The Error Message For User Feedback.
                 if (status.equals("NO"))
                 {
+                    mError = jsonResponse.getString(1);
                     return false;
-                }
-
-                else
-                {
-                    return true;
                 }
             }
 
             catch (IOException e) {
                 e.printStackTrace();
+                mError = e.toString();
+                return false;
             }
 
             catch (JSONException e){
                 e.printStackTrace();
+                mError = e.toString();
+                return false;
             }
 
-            // TODO: register the new account here.
             return true;
         }
 
@@ -348,12 +338,12 @@ public class LoginActivity extends AppCompatActivity {
 
             if (success) {
                 Intent myIntent = new Intent(LoginActivity.this, TestActivity.class);
-                myIntent.putExtra("PASSDATA",mEmail.toString());
+                myIntent.putExtra("LOGINDATA",mEmail.toString());
                 LoginActivity.this.startActivity(myIntent);
             }
 
             else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError("Invalid Password: " + mError);
                 mPasswordView.requestFocus();
             }
         }
@@ -362,55 +352,6 @@ public class LoginActivity extends AppCompatActivity {
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
-        }
-
-        //  Method To Build Our JSON Body. This Will Be Sent To The Web Service And Passed To The
-        //  SQL Query.
-        private JSONObject buildLoginJSONRequest() throws JSONException{
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("username", mEmail);
-            jsonObject.accumulate("password", mPassword);
-
-            return jsonObject;
-        }
-
-        //  This Function Dispatches Any JSONEncoded Data To The Server For Processing.
-        private void setPostRequestContent(HttpURLConnection conn, JSONObject jsonCredentials)
-            throws IOException {
-
-            //  Establish The Stream We Are Sending Our Data Across As Well As The Writer Which Is
-            //  Encoding The Data We Provide It.
-            OutputStream output = conn.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter
-                    (output, "UTF-8"));
-
-            writer.write(jsonCredentials.toString());
-            writer.flush();
-            writer.close();
-            output.close();
-        }
-
-        //  Returns The Response Received From The HTTPS Request.
-        private String receiveLoginResponse (HttpURLConnection conn) throws IOException {
-
-            String line = "";
-            String result = "";
-
-            //  Set Up A Stream Ready To Receive The HTTP Response.
-            InputStream inputStream = conn.getInputStream();
-            BufferedReader loginRequestReader = new BufferedReader(new InputStreamReader
-                    (inputStream, "iso-8859-1"));
-
-            //  While There Is Data To Read, Read Each Line And Append To The Result.
-            while ((line = loginRequestReader.readLine())!= null){
-                result += line;
-            }
-
-            //  Clean Up Our Resources And Then Send Back Return The Response Body.
-            loginRequestReader.close();
-            inputStream.close();
-
-            return result;
         }
     }
 }

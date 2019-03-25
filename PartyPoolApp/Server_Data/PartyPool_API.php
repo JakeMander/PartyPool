@@ -173,7 +173,7 @@ class PartyPool_API extends RestService
                             if (pg_num_rows($result) != 1)
                             {
                                 echo json_encode(new JsonResponse("NO",
-                                    "Login Has Failed", null));;
+                                    "You Have Entered An Incorrect Username Or Password", null));
                             }
 
                             else
@@ -218,9 +218,9 @@ class PartyPool_API extends RestService
                         try
                         {
                             $conn = pg_connect($this->connString);
-                            $sql = 'SELECT username FROM users WHERE username = $1 AND password = $2';
+                            $sql = 'SELECT username FROM users WHERE username = $1';
                             pg_prepare($conn, "Login", $sql);
-                            $result = pg_execute($conn, "Login", array($username, $password));
+                            $result = pg_execute($conn, "Login", array($username));
 
                             if (!$result)
                             {
@@ -232,7 +232,7 @@ class PartyPool_API extends RestService
                             //  Invalid Credentials, Or Is An Invalid Query.
                             if (pg_num_rows($result) != 0)
                             {
-                                echo json_encode(new JsonResponse("NO", "Create Account Has Failed",
+                                echo json_encode(new JsonResponse("NO", "Username Is Already Taken",
                                     null));
 
                                 pg_close($conn);
@@ -255,8 +255,8 @@ class PartyPool_API extends RestService
 
                         catch (Exception $e)
                         {
-                            die(json_encode(new JsonResponse("NO", "Query Has Failed For The Following
-                            Reason", null)));
+                            die(json_encode(new JsonResponse("NO", "Query Has Failed: ".$e,
+                                null)));
                         }
 
                         finally
