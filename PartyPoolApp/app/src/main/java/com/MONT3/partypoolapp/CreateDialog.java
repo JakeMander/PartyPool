@@ -33,6 +33,7 @@ public class CreateDialog extends AppCompatDialogFragment {
                         //choice = 1;
                         Toast.makeText(getActivity(),"Selected option: Party Mode",Toast.LENGTH_SHORT).show();
                         Intent myIntent = new Intent(getContext(), MainScreenParty.class);
+                        myIntent.putExtra("LoginType","Admin");
                         startActivity(myIntent);
                     }
                     else if(radioContinuous.isChecked())
