@@ -155,11 +155,13 @@ public class AccountCreation extends AppCompatActivity {
                 focusView = mPasswordView;
                 cancel = true;
 
-        }else if(!password.equals(repassword)){
+        }
+        else if(!password.equals(repassword)){
                 mRePasswordView.setError(getString(R.string.error_password_not_match));
                 focusView = mRePasswordView;
                 cancel = true;
-            }
+        }
+
 
         // Check for a valid username address.
         if (TextUtils.isEmpty(username)) {

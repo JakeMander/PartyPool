@@ -14,7 +14,7 @@
         android:layout_height="50sp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@mipmap/ic_launcher"
+        app:srcCompat="@drawable/ic_launcher_foreground"
         tools:layout_editor_absoluteY="5dp" />
 
     <TextView

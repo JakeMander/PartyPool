@@ -28,27 +28,26 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="96dp"
-        android:layout_height="95dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="24dp"
         android:contentDescription="@string/todo"
-        android:src="@android:drawable/sym_def_app_icon"
+        android:src="@drawable/custom_logo2"
         app:layout_constraintBottom_toTopOf="@+id/signup_form"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/custom_logo2" />
 
     <ScrollView
         android:id="@+id/signup_form"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="0dp"
+        android:layout_height="272dp"
+        android:layout_margin="16dp"
         android:background="#AAAABB"
+        android:elevation="@dimen/Elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
