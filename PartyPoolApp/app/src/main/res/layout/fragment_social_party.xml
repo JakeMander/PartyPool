@@ -44,7 +44,6 @@
                 android:id="@+id/people_list"
                 android:layout_width="match_parent"
                 android:layout_height="660dp"
-                android:background="@/colorAccent"
                 android:divider="@android:color/background_dark"
                 android:dividerHeight="1sp"
                 tools:layout_editor_absoluteX="33dp"
