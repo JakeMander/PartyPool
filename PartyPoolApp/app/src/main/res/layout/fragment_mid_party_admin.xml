@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mid_party_admin"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    tools:context=".mid_party_admin">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
+        android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="25dp"
@@ -15,6 +18,87 @@
         android:layout_marginBottom="50dp"
         android:background="#AAAAAA"
         android:paddingHorizontal="10dp">
+
+        <TextView
+            android:id="@+id/AdminPartyName"
+            android:layout_width="300dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:background="#FFFFFF"
+            android:text="@string/guestPartyName"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:layout_centerHorizontal="true"/>
+
+        <ImageView
+            android:id="@+id/AdminPartyAlbumArt"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:layout_marginTop="50dp"
+            android:layout_centerHorizontal="true"
+            android:background="#FFFFFF"/>
+
+        <ImageView
+            android:id="@+id/AdminPartyPrevious"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="31dp"
+            android:layout_marginTop="380dp"
+            android:layout_marginEnd="37dp"
+            android:layout_toStartOf="@+id/AdminPartyPausePlay"
+            android:src="@android:drawable/ic_media_previous"
+            app:layout_constraintEnd_toStartOf="@+id/AdminPartyPausePlay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/AdminPartyNext"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_marginStart="37dp"
+            android:layout_marginTop="380dp"
+            android:layout_marginEnd="31dp"
+            android:layout_toEndOf="@+id/AdminPartyPausePlay"
+            android:src="@android:drawable/ic_media_next"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/AdminPartyPausePlay"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/AdminPartyPausePlay"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="380dp"
+            android:layout_marginBottom="15dp"
+            android:src="@android:drawable/ic_media_pause"
+            app:layout_constraintBottom_toTopOf="@+id/AdminPartySize"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/AdminPartySize"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="470dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:layout_centerHorizontal="true"
+            android:text="@string/adminPartySize"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:id="@+id/AdminSongNumber"
+            android:layout_width="220dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="530dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:text="@string/adminSongNumber"
+            android:textSize="20sp"
+            android:layout_centerHorizontal="true"/>
 
     </RelativeLayout>
 
