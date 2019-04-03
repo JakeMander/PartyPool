@@ -25,22 +25,38 @@ public class MainScreenParty extends FragmentActivity {
     }
 
     private class MyPagerAdapter extends FragmentPagerAdapter{
-        public MyPagerAdapter(FragmentManager fm){
+        public MyPagerAdapter(FragmentManager fm)
+        {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int i) {
-            switch(i){
-                case 0 : return new VotePartyFrag();
-                case 1 : return new MidPartyFrag();
-                case 2 : return new SocialPartyFrag();
-                default: return new MidPartyFrag();
+            if(getIntent().getExtras().getString("LoginType").equals("Admin"))
+            {
+                switch(i)
+                {
+                    case 1 : return new mid_party_admin();
+                    default : return new mid_party_admin();
+                }
+            }
+            else {
+                switch (i) {
+                    case 0:
+                        return new VotePartyFrag();
+                    case 1:
+                        return new MidPartyFrag();
+                    case 2:
+                        return new SocialPartyFrag();
+                    default:
+                        return new MidPartyFrag();
+                }
             }
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+        {
             return 3;
         }
     }
