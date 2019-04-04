@@ -24,6 +24,7 @@
         android:name=".AccountCreation"
         android:label="@string/title_activity_account_creation" />
     <activity android:name=".TestActivity" />
+    <service android:name=".MyService"/>
     <activity
         android:name=".LoginActivity"
         android:label="@string/app_name">
