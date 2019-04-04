@@ -80,13 +80,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/username"
                     android:inputType="text"
                     android:maxLines="1"
+                    android:importantForAutofill="no"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
