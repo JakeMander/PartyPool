@@ -2,11 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3850efe4-5a9d-4ab9-9961-c3f96ba2e233" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/AccountSecurity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PartyPool_API.php" beforeDir="false" afterPath="$PROJECT_DIR$/PartyPool_API.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/AccountCreation.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/AccountCreation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/LoginActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/LoginActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/src/main/java/com/MONT3/partypoolapp/Network_API.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,11 +14,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PartyPool_API.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-222">
-              <caret line="222" column="80" lean-forward="true" selection-start-line="222" selection-start-column="80" selection-end-line="222" selection-end-column="80" />
+            <state relative-caret-position="3400">
+              <caret line="222" column="80" selection-start-line="222" selection-start-column="80" selection-end-line="222" selection-end-column="80" />
             </state>
           </provider>
         </entry>
@@ -28,13 +26,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/RestService.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2125">
+            <state relative-caret-position="601">
               <caret line="125" selection-start-line="125" selection-end-line="125" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/API_Handler.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="136">
@@ -165,7 +163,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="35269000" />
+    <option name="totallyTimeSpent" value="36827000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
@@ -260,22 +258,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/PartyPool_API.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-222">
-          <caret line="222" column="80" lean-forward="true" selection-start-line="222" selection-start-column="80" selection-end-line="222" selection-end-column="80" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/RestService.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2125">
-          <caret line="125" selection-start-line="125" selection-end-line="125" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/API_Handler.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
+        <state relative-caret-position="3400">
+          <caret line="222" column="80" selection-start-line="222" selection-start-column="80" selection-end-line="222" selection-end-column="80" />
         </state>
       </provider>
     </entry>
@@ -297,6 +281,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="323">
           <caret line="19" column="42" selection-start-line="19" selection-start-column="42" selection-end-line="19" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RestService.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="601">
+          <caret line="125" selection-start-line="125" selection-end-line="125" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/API_Handler.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="13" selection-start-line="13" selection-end-line="13" />
         </state>
       </provider>
     </entry>
