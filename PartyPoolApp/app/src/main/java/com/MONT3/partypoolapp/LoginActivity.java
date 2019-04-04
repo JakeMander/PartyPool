@@ -50,6 +50,7 @@ import java.net.MalformedURLException;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -64,22 +65,20 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-/**
- * A login screen that offers login via email/password.
- */
-
+// A login screen that offers login via email/password.
 public class LoginActivity extends AppCompatActivity {
 
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+    //  Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
-    private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    // Login References
+    private AccountSecurity mHasher;
+    private EditText mEmailView;
+    private EditText mPasswordView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +86,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (EditText) findViewById(R.id.email);
+        mHasher = AccountSecurity.InitialisePasswordHash();
 
         Button button1 = (Button) findViewById(R.id.button);
         button1.setOnClickListener( new OnClickListener() {
@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity {
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;
-        private final String mPassword;
+        private String mPassword;
         private String mError;
 
         UserLoginTask(String email, String password) {
@@ -260,6 +260,17 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
+
+                try {
+                    mPassword = mHasher.HashPassword(mPassword);
+                }
+
+                catch (NoSuchAlgorithmException e){
+                    e.printStackTrace();
+                    mError = e.getMessage();
+                    return false;
+                }
+
                 //  Define The Location Of Our Web Service Function And Create A Connection To
                 //  The Web Service.
                 final URL url = new URL("https://computing.derby.ac.uk/~partypool/LOGIN");

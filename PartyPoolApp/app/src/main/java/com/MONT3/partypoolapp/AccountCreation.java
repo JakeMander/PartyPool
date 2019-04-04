@@ -43,41 +43,27 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
-//import static android.Manifest.permission.READ_CONTACTS;
-
-/**
- * A login screen that offers login via email/password.
- */
+// A login screen that offers login via email/password.
 public class AccountCreation extends AppCompatActivity {
 
-    /**
-     * Id to identity READ_CONTACTS permission request.
-     */
-    //private static final int REQUEST_READ_CONTACTS = 0;
-
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
+     // Keep track of the login task to ensure we can cancel it if requested.
     private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mUsernameView;
-    private EditText mPasswordView;
-    private EditText mRePasswordView;
     private View mProgressView;
     private View mSignUpFormView;
+
+    //  Account Creation References.
+    private AccountSecurity mHasher;
+    private EditText mPasswordView;
+    private EditText mRePasswordView;
 
 
     //  On Creation Of The Activity, Set The View To The "account_creation", And Assign All The
@@ -89,6 +75,7 @@ public class AccountCreation extends AppCompatActivity {
         setContentView(R.layout.activity_account_creation);
 
         // Set up the login form.
+        mHasher = AccountSecurity.InitialisePasswordHash();
         mUsernameView = (AutoCompleteTextView) findViewById(R.id.create_username);
         mPasswordView = (EditText) findViewById(R.id.create_password);
 
@@ -241,7 +228,7 @@ public class AccountCreation extends AppCompatActivity {
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mUsername;
-        private final String mPassword;
+        private String mPassword;
         private String mError;
 
         UserLoginTask(String username, String password) {
@@ -253,6 +240,17 @@ public class AccountCreation extends AppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
+
+                //  Hash Password Using SHA-256 For Server Side Security.
+                try {
+                    mPassword = mHasher.HashPassword(mPassword);
+                }
+
+                catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                    mError = e.getMessage();
+                    return false;
+                }
 
                 //  Define The Location Of Our Web Service Function And Create A Connection To
                 //  The Web Service.
@@ -312,11 +310,13 @@ public class AccountCreation extends AppCompatActivity {
             catch (IOException e) {
                 e.printStackTrace();
                 mError = e.toString();
+                return false;
             }
 
             catch (JSONException e){
                 e.printStackTrace();
                 mError = e.toString();
+                return false;
             }
 
             return true;
