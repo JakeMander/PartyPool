@@ -40,6 +40,9 @@ public class CreateDialog extends AppCompatDialogFragment {
                     {
                         //choice = 2;
                         Toast.makeText(getActivity(),"Selected option: Continuous Mode",Toast.LENGTH_SHORT).show();
+                        Intent myIntent = new Intent(getContext(), MainScreenContinuous.class);
+                        myIntent.putExtra("LoginType","Admin");
+                        startActivity(myIntent);
                     }
 
                     }

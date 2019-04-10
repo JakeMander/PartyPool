@@ -37,6 +37,12 @@ public class JoinDialog extends AppCompatDialogFragment {
                             myIntent.putExtra("LoginType","Guest");
                             startActivity(myIntent);
                         }
+                        if (editPassword.getText().toString().equals("0000"))
+                        {
+                            Intent myIntent = new Intent(getContext(),MainScreenContinuous.class);
+                            myIntent.putExtra("LoginType","Guest");
+                            startActivity(myIntent);
+                        }
                     }
                 });
 

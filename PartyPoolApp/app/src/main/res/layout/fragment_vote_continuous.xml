@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VoteContinuousFrag"
+    android:background="@android:color/transparent">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50sp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="40dp"
+        android:background="#444444"
+        android:gravity="center"
+        android:text="Voting Screen"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="30sp" />
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="550dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="100dp"
+        android:background="@android:color/transparent">
+
+        <TextView
+            android:id="@+id/luckyTextView"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="430dp"
+            android:background="@drawable/rounded_corner"
+            android:gravity="center"
+            android:text="@string/lucky_text"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="23dp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/ContinuousAlbumOne"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/music_default" />
+
+        <TextView
+            android:id="@+id/ContinuousAlbumOneDesc"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="160dp"
+            android:background="@android:color/background_light" />
+
+        <ImageView
+            android:id="@+id/ContinuousAlbumTwo"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginHorizontal="200dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/music_default" />
+
+        <TextView
+            android:id="@+id/ContinuousAlbumTwoDesc"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="200dp"
+            android:layout_marginTop="160dp"
+            android:background="@android:color/background_light" />
+
+        <ImageView
+            android:id="@+id/ContinuousAlbumThree"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="220dp"
+            android:background="@drawable/music_default" />
+
+        <TextView
+            android:id="@+id/ContinuousAlbumThreeDesc"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="355dp"
+            android:background="@android:color/background_light" />
+
+        <ImageView
+            android:id="@+id/ContinuousAlbumFour"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_marginHorizontal="200dp"
+            android:layout_marginTop="220dp"
+            android:background="@drawable/music_default" />
+
+        <TextView
+            android:id="@+id/ContinuousAlbumFourDesc"
+            android:layout_width="130dp"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="200dp"
+            android:layout_marginTop="355dp"
+            android:background="@android:color/background_light" />
+
+    </RelativeLayout>
+
+
+
+</FrameLayout>
