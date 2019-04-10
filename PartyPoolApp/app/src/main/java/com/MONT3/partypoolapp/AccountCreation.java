@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Network;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -239,86 +240,16 @@ public class AccountCreation extends AppCompatActivity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            try {
+            NetworkAccess network =  NetworkAccess.getNetworkAccess();
+            String[] status = network.CreateAccount(mUsername, mPassword);
 
-                //  Hash Password Using SHA-256 For Server Side Security.
-                try {
-                    mPassword = mHasher.HashPassword(mPassword);
-                }
-
-                catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                    mError = e.getMessage();
-                    return false;
-                }
-
-                //  Define The Location Of Our Web Service Function And Create A Connection To
-                //  The Web Service.
-                final URL url = new URL
-                        ("https://computing.derby.ac.uk/~partypool/CREATEACCOUNT");
-                HttpURLConnection testConn = (HttpsURLConnection) url.openConnection();
-
-                //  Define Our Request As "POST" and Enable Output And Input. Allow For HTTP Read/
-                //  Write And Specify The Type Of Data We Are Handling.
-                testConn.setRequestMethod("POST");
-                testConn.setDoOutput(true);
-                testConn.setDoInput(true);
-                testConn.setRequestProperty( "Content-type", "application/json");
-
-                //  Build Our JSON Object Based On The Password And Username We Have Received.
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.accumulate("username", mUsername);
-                jsonObject.accumulate("password", mPassword);
-
-                //  Send Our HTTP Request Off To The Webservice Via A BufferedWriter.
-                OutputStream output = testConn.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter
-                        (output, "UTF-8"));
-
-                writer.write(jsonObject.toString());
-                writer.flush();
-                writer.close();
-
-                //  Receive HTTP Request Via A Buffered Reader.
-                String line = "";
-                String result = "";
-
-                InputStream inputStream = testConn.getInputStream();
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader
-                        (inputStream, "iso-8859-1"));
-
-                while ((line = streamReader.readLine()) != null) {
-                    result += line;
-                }
-
-                //  Creates A General JSON Object To Hold All The JSON Data. We Can Then Parse
-                //  Each Individual Component From This.
-                JSONObject receivedCredentials = new JSONObject(result);
-                JSONArray jsonResponse = receivedCredentials.getJSONArray("jsonResponse");
-
-                String status = jsonResponse.getString(0);
-
-                //  If First Index Is No, Login Has Failed. Display A Toast To Inform User And
-                //  Detail Reason.
-                if (status.equals("NO"))
-                {
-                    mError = jsonResponse.getString(1);
-                    return false;
-                }
-            }
-
-            catch (IOException e) {
-                e.printStackTrace();
-                mError = e.toString();
+            //  If First Index Is No, Login Has Failed. Display A Toast To Inform User And
+            //  Detail Reason.
+            if (status[0].equals("NO"))
+            {
+                mError = status[1];
                 return false;
             }
-
-            catch (JSONException e){
-                e.printStackTrace();
-                mError = e.toString();
-                return false;
-            }
-
             return true;
         }
 

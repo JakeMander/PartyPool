@@ -1,13 +1,16 @@
 package com.MONT3.partypoolapp;
 
+import android.content.Intent;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class TestActivity extends AppCompatActivity{
+public class TestActivity extends AppCompatActivity implements CreateDialog.DialogListener{
 private Button buttonJoin;
 private Button buttonCreate;
 
@@ -18,13 +21,13 @@ private Button buttonCreate;
 
         TextView tv = findViewById(R.id.textView2);
 
-        //  If User hHas Reached Splash Page From The Login Screen, Pull Data From The Associated
+        //  If User Has Reached Splash Page From The Login Screen, Pull Data From The Associated
         //  Intent, Else Pull The Data From The Create Account Screen Instead.
         if (getIntent().hasExtra("LOGINDATA")) {
             tv.setText("Welcome, " + getIntent().getStringExtra("LOGINDATA"));
         }
 
-        else{
+        else {
             tv.setText("Welcome, " + getIntent().getStringExtra("CREATEDATA"));
         }
 
@@ -37,7 +40,6 @@ private Button buttonCreate;
                 openCreateDialog();
             }
         });
-
         buttonJoin.setOnClickListener(new View.OnClickListener(){
             @Override
             public  void onClick(View v){
@@ -45,16 +47,49 @@ private Button buttonCreate;
             }
         });
     }
-    public void openCreateDialog()
-    {
-        CreateDialog dialog1 = new CreateDialog();
-        dialog1.show(getSupportFragmentManager(),"create dialog");
+    public void openCreateDialog() {
+        DialogFragment createDialog = new CreateDialog();
+        createDialog.show(getSupportFragmentManager(),"create dialog");
     }
 
-    public void openJoinDialog()
-    {
-        JoinDialog dialog1 = new JoinDialog();
-        dialog1.show(getSupportFragmentManager(),"join dialog");
+    public void openJoinDialog() {
+        JoinDialog joinDialog = new JoinDialog();
+        joinDialog.show(getSupportFragmentManager(),"join dialog");
+    }
+
+    public void openPartyConfirmDialog(String modeIn) {
+        PartyPasswordDialog confirmDialog = new PartyPasswordDialog().newInstance(modeIn);
+        confirmDialog.show(getSupportFragmentManager(), "confirm dialog");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+        RadioButton radioContinuous = (RadioButton) dialog.getDialog().findViewById
+                (R.id.continuousRadio);
+        RadioButton radioParty = (RadioButton) dialog.getDialog().findViewById
+                (R.id.partyRadio);
+
+        if(radioParty.isChecked())
+        {
+            //choice = 1;
+            //Toast.makeText(this,"Selected option: Party Mode",Toast.LENGTH_SHORT).show();
+            //Intent myIntent = new Intent(this, MainScreenParty.class);
+            //myIntent.putExtra("LoginType","Admin");
+            //startActivity(myIntent);
+            openPartyConfirmDialog("PARTY");
+        }
+
+        else if(radioContinuous.isChecked())
+        {
+            //choice = 2;
+            Toast.makeText(this,"Selected option: Continuous Mode",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        dialog.getDialog().cancel();
     }
 
 }

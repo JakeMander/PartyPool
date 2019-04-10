@@ -43,9 +43,15 @@
     <string name="guestPartyTimer">Next Vote In: </string>
     <string name="adminPartySize">Party Size: </string>
     <string name="adminSongNumber">Songs in Pool: </string>
+    <string name="partyModeVerifyWelcome">The Party Has Almost Started! Please Make A Note Of The
+    Following Password:</string>
+    <string name="partyModeVerifyPasswordPH">%1$s</string>
+    <string name="partyModeVerifyMessageTwo">Share This Out Amongst Friends So They Can Join The
+        Party!</string>
+    <string name="partyModeVerifyConfirm">We\'re All Set! Your Party Will Run In %1$s Mode</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="enter_infomation">Enter Infomation</string>
+    <string name="enter_infomation">Enter Information</string>
     <string name="re_enter_password">Re-Enter Password</string>
 </resources>
