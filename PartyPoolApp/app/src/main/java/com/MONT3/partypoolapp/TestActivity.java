@@ -10,6 +10,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Random;
+
 public class TestActivity extends AppCompatActivity implements CreateDialog.DialogListener{
 private Button buttonJoin;
 private Button buttonCreate;
@@ -72,24 +74,43 @@ private Button buttonCreate;
 
         if(radioParty.isChecked())
         {
-            //choice = 1;
-            //Toast.makeText(this,"Selected option: Party Mode",Toast.LENGTH_SHORT).show();
-            //Intent myIntent = new Intent(this, MainScreenParty.class);
-            //myIntent.putExtra("LoginType","Admin");
-            //startActivity(myIntent);
+            String test = GeneratePartyPassword(4);
             openPartyConfirmDialog("PARTY");
         }
 
         else if(radioContinuous.isChecked())
         {
             //choice = 2;
-            Toast.makeText(this,"Selected option: Continuous Mode",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Selected option: Continuous Mode",Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         dialog.getDialog().cancel();
+    }
+
+    //  Generate A Random Password
+    public String GeneratePartyPassword(int length) {
+
+        StringBuilder password = new StringBuilder();
+        char[] passwordCharacterSet =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
+        int charsetLength = passwordCharacterSet.length;
+        Random randomNumberGenerator = new Random();
+
+        /*
+         *  ToDo: Run A Database Query To Check Password Is Unique. If Not, Keep Running Password
+         *  ToDo: Generation Until One Is Found.
+         *                                                                                        */
+        for (int i = 0; i < length; i++) {
+            char randomCharacter = passwordCharacterSet[randomNumberGenerator.nextInt
+                    (charsetLength++)];
+            password.append(randomCharacter);
+        }
+
+        return password.toString();
     }
 
 }
