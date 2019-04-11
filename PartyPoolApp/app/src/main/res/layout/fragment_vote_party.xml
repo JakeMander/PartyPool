@@ -1,112 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout4"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".VotePartyFrag"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    tools:context=".VotePartyFrag">
 
     <!-- TODO: Update blank fragment layout -->
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="40dp"
-        android:background="#444444"
-        android:gravity="center"
-        android:text="Voting Screen"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="30sp" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <RelativeLayout
-        android:layout_width="350dp"
-        android:layout_height="550dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
-        android:background="@android:color/transparent">
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="Voting Screen"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:layout_constraintVertical_bias="0.32">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/vote_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            tools:layout_editor_absoluteY="136dp">
+
+            <LinearLayout
+                android:id="@+id/choice_1_vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/choice_3_vote"
+                app:layout_constraintEnd_toStartOf="@+id/choice_2_vote"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0">
+
+                <ImageView
+                    android:id="@+id/partyAlbumOne"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/music_default" />
+
+                <TextView
+                    android:id="@+id/partyAlbumOneDesc"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/button_main" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/choice_2_vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/partyAlbumTwo"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/music_default" />
+
+                <TextView
+                    android:id="@+id/partyAlbumTwoDesc"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/button_main" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/choice_3_vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/choice_4_vote"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/partyAlbumThree"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/music_default" />
+
+                <TextView
+                    android:id="@+id/partyAlbumThreeDesc"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/button_main" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/choice_4_vote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/choice_2_vote"
+                app:layout_constraintVertical_bias="1.0">
+
+                <ImageView
+                    android:id="@+id/partyAlbumFour"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/music_default" />
+
+                <TextView
+                    android:id="@+id/partyAlbumFourDesc"
+                    android:layout_width="130dp"
+                    android:layout_height="40dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/button_main" />
+            </LinearLayout>
+
+        </android.support.constraint.ConstraintLayout>
 
         <TextView
             android:id="@+id/luckyTextView"
             android:layout_width="200dp"
             android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="430dp"
+            android:layout_margin="8dp"
             android:background="@drawable/rounded_corner"
+            android:backgroundTint="@color/colorAccent"
             android:gravity="center"
             android:text="@string/lucky_text"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="23dp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/partyAlbumOne"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/music_default" />
-
-        <TextView
-            android:id="@+id/partyAlbumOneDesc"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="160dp"
-            android:background="@android:color/background_light" />
-
-        <ImageView
-            android:id="@+id/partyAlbumTwo"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginHorizontal="200dp"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/music_default" />
-
-        <TextView
-            android:id="@+id/partyAlbumTwoDesc"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="200dp"
-            android:layout_marginTop="160dp"
-            android:background="@android:color/background_light" />
-
-        <ImageView
-            android:id="@+id/partyAlbumThree"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="220dp"
-            android:background="@drawable/music_default" />
-
-        <TextView
-            android:id="@+id/partyAlbumThreeDesc"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="355dp"
-            android:background="@android:color/background_light" />
-
-        <ImageView
-            android:id="@+id/partyAlbumFour"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginHorizontal="200dp"
-            android:layout_marginTop="220dp"
-            android:background="@drawable/music_default" />
-
-        <TextView
-            android:id="@+id/partyAlbumFourDesc"
-            android:layout_width="130dp"
-            android:layout_height="40dp"
-            android:layout_marginHorizontal="200dp"
-            android:layout_marginTop="355dp"
-            android:background="@android:color/background_light" />
-
-    </RelativeLayout>
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+    </LinearLayout>
 
 
-
-</FrameLayout>
+</android.support.constraint.ConstraintLayout>

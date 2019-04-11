@@ -20,7 +20,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,9 +44,8 @@
     <ScrollView
         android:id="@+id/signup_form"
         android:layout_width="0dp"
-        android:layout_height="272dp"
+        android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:background="#AAAABB"
         android:elevation="@dimen/Elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -64,12 +63,12 @@
                 android:id="@+id/Sign_up_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#444444"
+                android:paddingBottom="5dp"
                 android:text="@string/enter_infomation"
                 android:textAlignment="center"
-                android:textColor="#FFFFFF"
 
-                android:textSize="25sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="30sp" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -82,7 +81,8 @@
                     android:hint="@string/create_username"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/Text_Light" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -101,7 +101,8 @@
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/Text_Light" />
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -119,7 +120,8 @@
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/Text_Light" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -129,9 +131,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/sign_up" />
+                android:backgroundTint="@color/button_main"
+                android:text="@string/sign_up"
+                android:textColor="@color/Text_Light" />
 
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/Company-team-Copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/Company_Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:text="© 2019 MONT3, PartyPool"
+            app:layout_constraintBottom_toTopOf="@+id/login_form"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
