@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorBackground"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     tools:context=".LoginActivity">
@@ -13,7 +13,7 @@
     <!-- Login progress -->
     <ProgressBar
         android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
+        style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Large"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -24,20 +24,22 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.20999998" />
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="12dp"
         android:contentDescription="@string/todo"
         app:layout_constraintBottom_toTopOf="@+id/login_form"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/custom_logo2" />
 
     <ScrollView
@@ -45,8 +47,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16sp"
-        android:background="#AAAABB"
-        android:elevation="@dimen/Elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,11 +64,12 @@
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#444444"
+                android:paddingBottom="5dp"
                 android:text="@string/welcome_to_partypool"
                 android:textAlignment="center"
+                android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="25sp" />
+                android:textSize="30sp" />
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -79,11 +80,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:hint="@string/username"
+                    android:importantForAutofill="no"
                     android:inputType="text"
                     android:maxLines="1"
-                    android:importantForAutofill="no"
-                    android:singleLine="true" />
-
+                    android:singleLine="true"
+                    android:textColor="@color/Text_Light" />
+              
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
@@ -101,7 +103,8 @@
                     android:importantForAutofill="no"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:textColor="@color/Text_Light" />
 
             </android.support.design.widget.TextInputLayout>
 
@@ -111,14 +114,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/log_in" />
+                android:backgroundTint="@color/button_main"
+                android:text="@string/log_in"
+                android:textColor="@color/Text_Light" />
 
             <Button
                 android:id="@+id/button"
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/button_main"
                 android:text="@string/sign_up"
+                android:textColor="@color/Text_Light"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -127,4 +134,23 @@
         </LinearLayout>
     </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/Company-team-Copyright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/Company_Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
+            android:text="© 2019 MONT3, PartyPool"
+            app:layout_constraintBottom_toTopOf="@+id/login_form"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
