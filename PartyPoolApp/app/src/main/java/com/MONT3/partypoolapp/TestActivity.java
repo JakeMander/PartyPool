@@ -1,6 +1,7 @@
 package com.MONT3.partypoolapp;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -113,4 +114,7 @@ private Button buttonCreate;
         return password.toString();
     }
 
+    public class UserLoginTask extends AsyncTask <void, void, Boolean> {
+
+    }
 }

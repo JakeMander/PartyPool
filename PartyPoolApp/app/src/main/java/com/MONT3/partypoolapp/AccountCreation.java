@@ -179,7 +179,6 @@ public class AccountCreation extends AppCompatActivity {
 
     private boolean isEmailValid(String username) {
         return (username.length() >= 6 && username.length() <= 18);
-
     }
 
     private boolean isPasswordValid(String password) {

@@ -123,6 +123,49 @@ class PartyPool_API extends RestService
                     }
                 }
 
+                //  Check A PartyPassword For Uniqueness Then Inform The Client.
+                if (strtoupper($parameters[0]) == "CHECKPASSWORD")
+                {
+                    $partyPassword = $parameters[1];
+                    $conn = pg_connect($this -> connString);
+
+                    if ($conn)
+                    {
+                        try
+                        {
+                            $sql = 'SELECT * FROM party WHERE password = $1';
+                            pg_prepare($conn, "PasswordCheck", $sql);
+                            $result = pg_execute($conn, "PasswordCheck", array($partyPassword));
+
+                            if (!result)
+                            {
+                                die (json_encode(new JsonResponse("NO", "Query Has Failed", null)));
+                            }
+
+                            //  We Need To Inform The Client In The Instance A Requested Party Password Is Already Taken.
+                            if (pg_num_rows($result) != 0)
+                            {
+                                echo (json_encode(new JsonResponse("NO", "Password Already Generated", null)));
+                            }
+
+                            else
+                            {
+                                echo(json_encode(new JsonResponse("YES", "Password Is Valid", $partyPassword)));
+                            }
+                        }
+
+                        catch (Exception $e)
+                        {
+                            die(json_encode("NO", "ERROR WITH QUERY", $e));
+                        }
+
+                        finally
+                        {
+                            pg_close($conn);
+                        }
+                    }
+                }
+
                 else
                 {
                     json_encode(new JsonResponse("NO","Invalid Parameter Supplied", null));
