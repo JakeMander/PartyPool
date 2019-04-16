@@ -36,6 +36,7 @@ public class MainScreenParty extends FragmentActivity {
             {
                 switch(i)
                 {
+                    case 0 : return new music_list();
                     case 1 : return new mid_party_admin();
                     case 2 : return new SocialPartyFrag();
                     default : return new mid_party_admin();
