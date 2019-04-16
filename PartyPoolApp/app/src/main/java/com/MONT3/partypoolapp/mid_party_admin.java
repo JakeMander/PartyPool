@@ -40,13 +40,13 @@ public class mid_party_admin extends Fragment implements View.OnClickListener {
             case R.id.AdminPartyPausePlay:
                 if(inPlay.equals(false))
                 {
-                    getActivity().startService(new Intent(getActivity(),MyService.class));
+
                     pausePlayButton.setImageResource(android.R.drawable.ic_media_pause);
                     inPlay = true;
                 }
                 else if(inPlay.equals(true))
                 {
-                    getActivity().stopService(new Intent(getActivity(),MyService.class));
+
                     pausePlayButton.setImageResource(android.R.drawable.ic_media_play);
                     inPlay = false;
                 }
