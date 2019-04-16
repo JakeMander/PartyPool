@@ -139,7 +139,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         else {
-            // Show a progress spinner, and kick off a background task to
+            // Show a progress spinner, hide the activity and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);

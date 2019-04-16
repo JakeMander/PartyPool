@@ -147,13 +147,9 @@ public class NetworkAccess {
         String[] status = {"NO", "Network Error: Unhandled", "NODATA"};
 
         try {
-            URL url = new URL ("https://computing.derby.ac.uk/~partypool/CHECKPASSWORD/XiKI");
-            HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Content-type","application/json");
-            connection.setDoOutput(true);
-            connection.setDoInput(true);
-            connection.connect();
+
+            HttpURLConnection connection =  EstablishAuthenticationConnection(new URL
+                    (baseURL + "/CHECKPASSWORD/" + password), "GET");
 
             try {
                 status = ConnectionReader(connection);
@@ -181,10 +177,10 @@ public class NetworkAccess {
     //  Saves On Redundant Code.
     private static HttpURLConnection EstablishAuthenticationConnection(URL urlIn, String reqMethod)
                 throws IOException{
+
         HttpURLConnection connection =  (HttpURLConnection) urlIn.openConnection();
+
         connection.setRequestMethod(reqMethod);
-        connection.setDoInput(true);
-        connection.setDoOutput(true);
         connection.setRequestProperty("Content-type","application/json");
         return  connection;
     }
