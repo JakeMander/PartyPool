@@ -14,8 +14,17 @@ import android.widget.Toast;
 import java.util.Random;
 
 public class TestActivity extends AppCompatActivity implements CreateDialog.DialogListener{
+
 private Button buttonJoin;
 private Button buttonCreate;
+
+//  Responses For Async Password Checker.
+private UserLoginTask mCheckPasswordTask = null;
+private String passwordGenError = null;
+NetworkAccess networkAccess = NetworkAccess.getNetworkAccess();
+
+private String password;
+private Boolean passwordError = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +69,8 @@ private Button buttonCreate;
         joinDialog.show(getSupportFragmentManager(),"join dialog");
     }
 
-    public void openPartyConfirmDialog(String modeIn) {
-        PartyPasswordDialog confirmDialog = new PartyPasswordDialog().newInstance(modeIn);
+    public void openPartyConfirmDialog(String modeIn, String passwordIn) {
+        PartyPasswordDialog confirmDialog = new PartyPasswordDialog().newInstance(modeIn, passwordIn);
         confirmDialog.show(getSupportFragmentManager(), "confirm dialog");
     }
 
@@ -73,10 +82,17 @@ private Button buttonCreate;
         RadioButton radioParty = (RadioButton) dialog.getDialog().findViewById
                 (R.id.partyRadio);
 
+        if (mCheckPasswordTask != null)
+        {
+            return;
+        }
+
+        mCheckPasswordTask = new UserLoginTask();
+        mCheckPasswordTask.execute((Void) null);
+
         if(radioParty.isChecked())
         {
-            String test = GeneratePartyPassword(4);
-            openPartyConfirmDialog("PARTY");
+            openPartyConfirmDialog("PARTY", password);
         }
 
         else if(radioContinuous.isChecked())
@@ -99,12 +115,9 @@ private Button buttonCreate;
         char[] passwordCharacterSet =
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890".toCharArray();
         int charsetLength = passwordCharacterSet.length;
+
         Random randomNumberGenerator = new Random();
 
-        /*
-         *  ToDo: Run A Database Query To Check Password Is Unique. If Not, Keep Running Password
-         *  ToDo: Generation Until One Is Found.
-         *                                                                                        */
         for (int i = 0; i < length; i++) {
             char randomCharacter = passwordCharacterSet[randomNumberGenerator.nextInt
                     (charsetLength++)];
@@ -114,7 +127,82 @@ private Button buttonCreate;
         return password.toString();
     }
 
-    public class UserLoginTask extends AsyncTask <void, void, Boolean> {
+    public class UserLoginTask extends AsyncTask <Void, Void, Boolean> {
+        String passwordToCheck;
+        String[] status;
 
+        UserLoginTask() {
+            passwordToCheck = null;
+            status = null;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            boolean keepRegen = false;
+
+            //  Whilst We Don't Have A Unique Password, Or Haven't Encountered An Error...
+            do {
+                boolean isError = false;
+
+                //  Generate A Random Password And Check For Uniqueness Against The Database.
+                passwordToCheck = GeneratePartyPassword(4);
+                status = networkAccess.CheckPassword(passwordToCheck);
+
+                //  We Need To Handle Instances Where The Password Is Not Unique, Or The Request
+                //  To The Server Has Encountered Issues.
+                if (status[0].equals("NO")) {
+
+                    //  If An Exception Is Thrown, Do Not Continue Looping, Instead, Exit The Loop
+                    //  And Inform The Client Via A Toast That There Is An Issue. The Client Can
+                    //  Then Decide If They Wish To Try Again.
+                    if (!status[1].equals("Password Already Generated")) {
+                        passwordGenError = status[1];
+                        return false;
+                    }
+
+                    //  If We Try To Generate A Password That Already Exists, We Need To Attempt To
+                    //  Generate A New Password.
+                    else
+                    {
+                        keepRegen = true;
+                    }
+
+                }
+
+                //  Password Is Valid, Break The Loop And Hand Value Off To UI.
+                else {
+                    keepRegen = true;
+                }
+
+            } while (keepRegen);
+
+            //  Password Is Valid And No Exception Has Been Encountered. Return True To Indicate
+            //  Password Can Be Used By UI And Generate A New Dialog.
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute (final Boolean passwordGenOk) {
+            mCheckPasswordTask= null;
+
+            // ToDo: If Success, Pass Back The Password And Prompt Program To Exit Loop.
+            if (passwordGenOk) {
+                password = passwordToCheck;
+                passwordError = false;
+            }
+
+            //ToDo: Password Is Invalid/Bug Occurred Either Rerun Loop Or Stop If Bug And Notify
+            //ToDO: Client.
+            else {
+                passwordError = true;
+                Toast.makeText(getApplicationContext(), "Password Generation Has Failed: " +
+                                passwordGenError,Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected void onCancelled () {
+            mCheckPasswordTask = null;
+        }
     }
 }

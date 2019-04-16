@@ -68,7 +68,7 @@ public class NetworkAccess {
             //  The Web Service.
             try {
                 HttpURLConnection networkConnection = EstablishAuthenticationConnection(new URL
-                                (baseURL + "/LOGIN"));
+                                (baseURL + "/LOGIN"), "POST");
 
                 //  Build Our JSON Object Based On The Password And Username We Have Received.
                 try {
@@ -113,13 +113,14 @@ public class NetworkAccess {
             //  The Web Service.
             try {
                 HttpURLConnection networkConnection = EstablishAuthenticationConnection(new URL
-                        (baseURL + "/CREATEACCOUNT"));
+                        (baseURL + "/CREATEACCOUNT"), "POST");
                 try {
                     //  Build Our JSON Object Based On The Password And Username We Have Received.
                     JSONObject jsonObject = BuildUserJSON(userIn, userPassword);
                     try {
                         ConnectionWriter(networkConnection, jsonObject);
                         status = ConnectionReader(networkConnection);
+                        networkConnection.disconnect();
                         } catch (IOException e) {
                             status[1] = "Network Error: Read/Write Error" + e;
                         } catch (JSONException e) {
@@ -141,12 +142,47 @@ public class NetworkAccess {
         }
     }
 
+    public String[] CheckPassword(String passwordIn) {
+        String password = passwordIn;
+        String[] status = {"NO", "Network Error: Unhandled", "NODATA"};
+
+        try {
+            URL url = new URL ("https://computing.derby.ac.uk/~partypool/CHECKPASSWORD/XiKI");
+            HttpURLConnection connection =  (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Content-type","application/json");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            connection.connect();
+
+            try {
+                status = ConnectionReader(connection);
+                connection.disconnect();
+            } catch (IOException e) {
+                status[1] = e.toString();
+            }
+            catch (JSONException e) {
+                status[1] = e.toString();
+            }
+        }
+        catch (MalformedURLException e) {
+            status[1] = e.toString();
+        }
+
+        catch (IOException e) {
+            status[1] = e.toString();
+            return status;
+        }
+
+        return status;
+    }
+
     //  Establish The HTTP Connection For Any Authentication Requests Using The Supplied URL.
     //  Saves On Redundant Code.
-    private static HttpURLConnection EstablishAuthenticationConnection(URL urlIn)
+    private static HttpURLConnection EstablishAuthenticationConnection(URL urlIn, String reqMethod)
                 throws IOException{
         HttpURLConnection connection =  (HttpURLConnection) urlIn.openConnection();
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod(reqMethod);
         connection.setDoInput(true);
         connection.setDoOutput(true);
         connection.setRequestProperty("Content-type","application/json");
@@ -164,7 +200,7 @@ public class NetworkAccess {
         return jsonObject;
     }
 
-    private void ConnectionWriter(HttpURLConnection connectionIn,JSONObject jsonIn)
+    private static void ConnectionWriter(HttpURLConnection connectionIn,JSONObject jsonIn)
             throws IOException {
 
         OutputStream output = connectionIn.getOutputStream();
@@ -175,7 +211,8 @@ public class NetworkAccess {
         writer.close();
     }
 
-    private String[] ConnectionReader(HttpURLConnection connectionIn) throws IOException, JSONException{
+    private static String[] ConnectionReader(HttpURLConnection connectionIn) throws IOException,
+            JSONException{
         String line = "";
         String result = "";
 

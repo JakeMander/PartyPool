@@ -43,133 +43,10 @@ class PartyPool_API extends RestService
     public function performGet($url, $parameters, $requestBody, $accept)
     {
         //  Group Functionality By Number Of Parameters For Easier Reading And More Logical Structure.
-        switch (count($parameters)) {
-
+        switch (count($parameters))
+        {
             case 2:
-
-                //  TODO: Remove Once App Is Running.
-                //  Test Function For Use In Browser. Checks Connection And Runs A Simple SELECT PostgreSQL Query
-                //  To Retrieve A TestUser Password.
-                if (strtoupper($parameters[0]) == "TESTLOGIN")
-                {
-                    $userValue = $parameters[1];
-                    $conn = pg_connect($this->connString);
-
-                    //  Test To See If A Connection Can Be Established
-                    if ($conn)
-                    {
-                        //  Attempt To Retrieve Data From The Database And Handle Any Exceptions That Occur.
-                        try
-                        {
-                            //  Statement To Retrieve The Associated Password Of A Supplied User.
-                            $sql = 'SELECT * FROM users WHERE username = $1 ORDER BY username';
-                            //  Ensure Our SQL Is Sanitised! Prepare The SQL Statement And Bind The Parameters We Supply
-                            //  Via The Array To The $1.
-                            pg_prepare($conn, "TestUserCheck", $sql);
-                            $result = pg_execute($conn, "TestUserCheck", array($userValue));
-
-                            //  If Query Fails, Return The Error Message Returned By Database.
-                            if (!result)
-                            {
-                                die (json_encode(new JsonResponse("NO", "Query Has Failed",
-                                    null)));
-                            }
-
-                            //  While pg_fetch_row Has Rows To Read, Read The Next Returned Row And Echo Fields.
-                            if (pg_num_rows($result) != 0)
-                            {
-                                $users = array();
-
-                                while ($row = pg_fetch_row($result))
-                                {
-                                    $user = new User($row[0], $row[1]);
-
-                                    echo "Row[0]:".$row[0];
-                                    echo "Row[1]:".$row[1];
-
-                                    array_push($users, $user);
-                                    echo"User1: ".$user->getUsername();
-                                    echo"User2: ".$user->getPassword();
-
-                                }
-
-                                echo json_encode(new JsonResponse("YES", "OK", $users));
-                            }
-
-                            else
-                            {
-                                echo json_encode(new JsonResponse("NO", "Query Has Returned 0 Values",
-                                    null));
-                            }
-                        }
-
-                        catch (Exception $e)
-                        {
-                            echo json_encode(new JsonResponse("NO","ERROR WITH QUERY: $e",
-                                null));
-                        }
-
-                        finally
-                        {
-                            pg_close($conn);
-                        }
-                    }
-
-                    //  We Have Been Unable To Establish A Connection To The Database. Terminate Execution Of Script.
-                    else
-                    {
-                        die(json_encode(new JsonResponse("NO","Connection Has Failed",
-                            null)));
-                    }
-                }
-
-                //  Check A PartyPassword For Uniqueness Then Inform The Client.
-                if (strtoupper($parameters[0]) == "CHECKPASSWORD")
-                {
-                    $partyPassword = $parameters[1];
-                    $conn = pg_connect($this -> connString);
-
-                    if ($conn)
-                    {
-                        try
-                        {
-                            $sql = 'SELECT * FROM party WHERE password = $1';
-                            pg_prepare($conn, "PasswordCheck", $sql);
-                            $result = pg_execute($conn, "PasswordCheck", array($partyPassword));
-
-                            if (!result)
-                            {
-                                die (json_encode(new JsonResponse("NO", "Query Has Failed", null)));
-                            }
-
-                            //  We Need To Inform The Client In The Instance A Requested Party Password Is Already Taken.
-                            if (pg_num_rows($result) != 0)
-                            {
-                                echo (json_encode(new JsonResponse("NO", "Password Already Generated", null)));
-                            }
-
-                            else
-                            {
-                                echo(json_encode(new JsonResponse("YES", "Password Is Valid", $partyPassword)));
-                            }
-                        }
-
-                        catch (Exception $e)
-                        {
-                            die(json_encode("NO", "ERROR WITH QUERY", $e));
-                        }
-
-                        finally
-                        {
-                            pg_close($conn);
-                        }
-                    }
-                }
-
-                else
-                {
-                    json_encode(new JsonResponse("NO","Invalid Parameter Supplied", null));
-                }
+                echo "TWO";
             break;
 
             default:
@@ -242,8 +119,7 @@ class PartyPool_API extends RestService
 
                     else
                     {
-                        echo (json_encode(new JsonResponse("NO",
-                            "Missing Credentials", null)));
+                        echo (json_encode(new JsonResponse("NO", "Missing Credentials", null)));
                     }
 
                 }
