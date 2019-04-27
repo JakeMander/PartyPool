@@ -75,13 +75,6 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
             //pass list
             musicSrv.setList(songList);
             musicBound = true;
-            musicSrv.setSong(0);
-            musicSrv.playSong();
-            if(playbackPaused) {
-                setController();
-                playbackPaused = false;
-            }
-            controller.show(0);
         }
 
         @Override
@@ -133,6 +126,18 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
 
     public void songPicked(View view){
         musicSrv.setSong(Integer.parseInt(view.getTag().toString()));
+        musicSrv.playSong();
+        if(playbackPaused){
+            setController();
+            playbackPaused=false;
+        }
+        controller.show(0);
+    }
+
+    public void playSongFromList(Song song)
+    {
+        int id = songList.indexOf(song);
+        musicSrv.setSong(id);
         musicSrv.playSong();
         if(playbackPaused){
             setController();
@@ -327,6 +332,11 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
         {
             return 3;
         }
+    }
+
+    public ArrayList<Song> getSongs()
+    {
+        return songList;
     }
 
 }
