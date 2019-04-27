@@ -153,6 +153,8 @@
             android:layout_height="wrap_content"
             android:padding="2dp"
             android:text="© 2019 MONT3, PartyPool"
+            android:textAlignment="center"
+            android:textSize="10sp"
             app:layout_constraintBottom_toTopOf="@+id/login_form"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
