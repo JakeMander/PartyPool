@@ -1,28 +1,17 @@
 package com.MONT3.partypoolapp;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Song {
+    private long id;
+    private String title;
+    private String artist;
 
 
-    private String songName;
-    private String songArtist;
-    private String songID;
-    private String filePath;
+    public Song(long songID, String songTitle, String songArtist) {
+        id = songID;
+        title = songTitle;
+        artist = songArtist;
+    }
 
-    List songData = new ArrayList();
-
-    public String getSongName() {
-        return songName;
-    }
-    public String getSongArtist() {
-        return songArtist;
-    }
-    public String getSongID() {
-        return songID;
-    }
-    public String getFilePath() {
-        return filePath;
-    }
-}
+    public long getID(){return id;}
+    public String getTitle(){return title;}
+    public String getArtist(){return artist;}
