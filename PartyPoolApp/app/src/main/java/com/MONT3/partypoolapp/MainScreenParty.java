@@ -16,6 +16,7 @@ import java.util.Comparator;
 import android.net.Uri;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.util.Log;
 import android.widget.ListView;
 import android.os.IBinder;
 import android.content.ComponentName;
@@ -61,8 +62,6 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
         pager.setCurrentItem(1);
-
-
     }
 
     //connect to the service
@@ -78,11 +77,17 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
             musicBound = true;
             musicSrv.setSong(0);
             musicSrv.playSong();
+            if(playbackPaused) {
+                setController();
+                playbackPaused = false;
+            }
+            controller.show(0);
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
             musicBound = false;
+            controller.hide();
         }
     };
 
@@ -173,8 +178,8 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
     @Override
     public int getDuration() {
         if(musicSrv!=null && musicBound && musicSrv.isPng())
-        return musicSrv.getDur();
-  else return 0;
+            return musicSrv.getDur();
+        else return 0;
     }
 
     @Override
@@ -222,7 +227,7 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
 
     private void setController(){
         //set the controller up
-        controller = new MusicController(this);
+        if( controller == null ) controller = new MusicController(this);
         controller.setPrevNextListeners(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -263,15 +268,19 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
     @Override
     protected void onPause(){
         super.onPause();
-        paused=true;
+        if( ! paused ) {
+            setController();
+            paused = true;
+        }
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
-        if(paused){
+        if(paused) {
             setController();
-            paused=false;
+            paused = false;
         }
     }
 

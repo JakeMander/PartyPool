@@ -3,6 +3,8 @@ package com.MONT3.partypoolapp;
 import android.app.Service;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.AudioAttributes;
+import android.os.Build;
 import android.os.IBinder;
 
 import java.io.File;
@@ -55,7 +57,14 @@ public class MusicService extends Service implements
     public void initMusicPlayer(){
         player.setWakeMode(getApplicationContext(),
                 PowerManager.PARTIAL_WAKE_LOCK);
-        player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            player.setAudioAttributes(new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build());
+        } else {
+            player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        }
 
         player.setOnPreparedListener(this);
         player.setOnCompletionListener(this);
@@ -102,13 +111,14 @@ public class MusicService extends Service implements
             File file = new File(getPath(trackUri));
             long length = file.getTotalSpace();
             FileInputStream inputStream = new FileInputStream(file);
-            player.setDataSource(inputStream.getFD(),00,length);
+            player.setDataSource(inputStream.getFD(),01,length);
+            player.prepareAsync();
             inputStream.close();
         }
         catch(Exception e){
             Log.e("MUSIC SERVICE", "Error setting data source", e);
         }
-        player.prepareAsync();
+
     }
 
     public String getPath(Uri uri)
@@ -116,7 +126,7 @@ public class MusicService extends Service implements
         String[] projection = { MediaStore.Audio.Media.DATA };
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor == null) return null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+        int column_index = cursor.getColumnIndex(MediaStore.Audio.Media.DATA);
         cursor.moveToFirst();
         String s=cursor.getString(column_index);
         cursor.close();
@@ -138,7 +148,7 @@ public class MusicService extends Service implements
     }
 
     public int getDur(){
-        return player.getDuration();
+            return player.getDuration();
     }
 
     public boolean isPng(){
