@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,10 +22,10 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class music_list extends Fragment {
-
+public class music_list extends Fragment implements View.OnClickListener{
 private ArrayList<Song> songReference;
 private Activity activityReference;
+private Button fileExplorer;
     public music_list() {
         // Required empty public constructor
     }
@@ -69,9 +70,28 @@ private Activity activityReference;
 
         CustomMusicListAdapter customMusicListAdapter = new CustomMusicListAdapter();
         listView.setAdapter(customMusicListAdapter);
+        fileExplorer = view.findViewById(R.id.button_add_dir);
+        fileExplorer.setOnClickListener(this);
 
     return view;
     }
+
+    public void openFileDialog()
+    {
+        FileDialog dialog = new FileDialog();
+        dialog.show(getFragmentManager(),"File Dialog");
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            case R.id.button_add_dir:
+                openFileDialog();
+        }
+    }
+
+
     class CustomMusicListAdapter extends BaseAdapter {
 
         @Override
