@@ -305,6 +305,12 @@ class PartyPool_API extends RestService
                                 $result = pg_execute($conn, "Login", array($username, $password));
                                 echo json_encode(new JsonResponse("YES", "Account Created",
                                     null));
+
+                                if (!$result)
+                                {
+                                    die (json_encode(new JsonResponse("NO", "Query Has Failed: ".pg_errormessage($conn),
+                                        null)));
+                                }
                             }
                         }
 
@@ -323,6 +329,99 @@ class PartyPool_API extends RestService
                     else
                     {
                         echo (json_encode(new JsonResponse("NO", "Missing Credentials", null)));
+                    }
+                }
+
+                //  Password Has Been Verified As Unique. Service Will Now Create A Party Which Will Contain Details
+                //  Regarding Mode And Admin Permissions. The Password Will Act As A Foreign Key To Song Data.
+                else if ($parameters[0] == "CREATEPARTY")
+                {
+                    $partyDetails = json_decode($requestBody);
+
+                    //  Ensure All The Data Required To Update Our Database Has Been Set. Missing Data Will Cause
+                    //  Exceptions On The DBMS.
+                    if(isset($partyDetails ->{"password"}) && isset($partyDetails ->{"mode"})
+                         && isset ($partyDetails ->{"timestamp"}) && isset ($partyDetails ->{"admin"}))
+                    {
+
+                        //  Extract The Values We Need To Update Our Party And Association Table From JSON.
+                        $password = $partyDetails -> {"password"};
+                        $mode = $partyDetails -> {"mode"};
+                        $timestamp = $partyDetails -> {"timestamp"};
+                        $admin = $partyDetails -> {"admin"};
+
+                        //  Update Our Party Values Then Establish An Association Between The New Party And The User
+                        //  Who Is Creating The Party (Admin). This Will Allow Us To Logically Manage User And Party
+                        //  Details Separately.
+                        try
+                        {
+                            $conn = pg_connect($this->connString);
+
+                            //  Initialise Our SQL Statements We Will Use To Update Both The Party Table And The Party
+                            //  Association Table.
+                            $sqlInsertParty = 'INSERT INTO party VALUES ($1, $2, $3)';
+                            $sqlInsertAssociation = 'INSERT INTO partyassociation VALUES ($1, $2)';
+
+                            //  Begin A Transaction To Conform To ACID Principles. A Query Should Change All Or
+                            //  Change Nothing!
+                            echo "BEGIN";
+                            pg_query($conn,"BEGIN");
+
+                            //  Prepare Our Statements And Send Them Over To The DBMS So They Can Be Called.
+                            echo "Prepare";
+                            pg_prepare($conn, "CreatePartyAddParty", $sqlInsertParty);
+                            pg_prepare($conn, "CreatePartyAddAssociation", $sqlInsertAssociation);
+
+                            //  Our Queries Must Be Executed Separately, So Store Each Result Separately So We Can
+                            //  Evaluate If They Were Successful or Not.
+                            $result1 = pg_execute($conn, "CreatePartyAddParty",
+                                array($password, $mode, $timestamp));
+                            $result2 = pg_execute($conn, "CreatePartyAddAssociation",
+                                array($admin, $password));
+
+                            //  If One Of The Queries Fails, Attempt To Rollback To The Previous Values Stored In
+                            //  The Database.
+                            if (!$result1 || !$result2)
+                            {
+                                if (pg_query($conn,"ROLLBACK"))
+                                {
+                                    die((json_encode(new JsonResponse("NO", "Query Has Failed Values Rolled Back",
+                                        null))));
+                                }
+
+                                //  If The Rollback Fails, Inform The User And Kill The Script. This Allows Client Side
+                                //  To Be Made Aware That The Party Has Not Been Created. The Server Will Handle The
+                                //  Dead Transaction On The Server Side.
+                                else
+                                {
+                                    die ((json_encode(new JsonResponse("NO", "Rollback Has Failed: ", null))));
+                                }
+                            }
+
+                            //  Transaction Has Been Successful. Commit The Changes So We Can Be Certain Atomicity Of
+                            //  Queries Is Maintained.
+                            else
+                            {
+                                pg_query($conn, "COMMIT");
+                                (json_encode(new JsonResponse("YES", "Changes Successfully Committed")));
+                            }
+                        }
+
+                        catch (Exception $e)
+                        {
+                            die(json_encode(new JsonResponse("NO", "Query Has Failed: ".$e,
+                                null)));
+                        }
+
+                        finally
+                        {
+                            pg_close($conn);
+                        }
+
+                    }
+
+                    else {
+                        die(json_encode(new JsonResponse("NO", "Required JSON Parameters Not Received: ", null)));
                     }
                 }
 

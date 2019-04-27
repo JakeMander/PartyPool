@@ -19,16 +19,6 @@ public class CreateDialog extends DialogFragment {
     private RadioButton radioParty;
     private DialogListener activityReference;
 
-    /*  This Is The Interface That The Activity Must Implement To Recieve
-     *  Callbacks From The Dialog Box. This Will Allow The Main Activity
-     *  To Receive Data From The Dialog By Maintaining A Reference To The
-     *  Dialog In Each Method. */
-
-    public interface DialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void onDialogNegativeClick(DialogFragment dialog);
-    }
-
     //  Override The Fragment.onAttatch() Method So We Maintain Our Reference
     //  Back To The Activity.
     @Override
@@ -67,14 +57,14 @@ public class CreateDialog extends DialogFragment {
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        activityReference.onDialogPositiveClick(CreateDialog.this);
+                        activityReference.onDialogPositiveClickModeSelect(CreateDialog.this);
                     }
                 })
 
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        activityReference.onDialogNegativeClick(CreateDialog.this);
+                        activityReference.onDialogNegativeClickModeSelect(CreateDialog.this);
                     }
                 });
 

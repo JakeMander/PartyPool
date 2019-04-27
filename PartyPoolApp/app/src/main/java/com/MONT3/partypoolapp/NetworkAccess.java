@@ -24,6 +24,9 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.TimeZone;
 
 public class NetworkAccess {
 
@@ -137,9 +140,8 @@ public class NetworkAccess {
         } catch (NoSuchAlgorithmException e) {
             status[1] = "Authentication Error: " + e;
         }
-        finally {
-            return status;
-        }
+
+        return status;
     }
 
     public String[] CheckPassword(String passwordIn) {
@@ -173,6 +175,49 @@ public class NetworkAccess {
         return status;
     }
 
+    //  Once Our Party Password Has Been Validated, And The User Is Happy With Their Decision,
+    //  Send All The Details Off To The Web Service For Party Creation.
+    //  TODO: Add Time Stamp For Party Creation, This Will Allow Us To Remove Any Outdated Party's
+    //  TODO: From The Database When A Client Logs In If They Have Not Been Closed Properly.
+    public String[] CreateParty(String passwordIn, String modeIn, String adminIn) {
+
+        String password = passwordIn;
+        String mode = modeIn;
+        String admin = adminIn;
+
+        //  Time Settings For Management Of The Timestamp. This Will Be Used By The Database To
+        //  Clear Out Old Parties Upon The User Logging In To The Application.
+        TimeZone locale = null;
+        ZonedDateTime timestamp = null;
+
+        String[] status = {"NO", "Network Error: Unhandled", "NODATA"};
+
+        try {
+            HttpURLConnection connection = EstablishAuthenticationConnection (new URL
+                    (baseURL + "/CREATEPARTY/" + passwordIn), "POST");
+            try {
+                locale = TimeZone.getDefault();
+                JSONObject jsonObject = BuildPartyJSON(password, mode, admin);
+                try {
+                    ConnectionWriter(connection, jsonObject);
+                    status = ConnectionReader(connection);
+                    connection.disconnect();
+                } catch (IOException e) {
+                    status[1] = e.toString();
+                }
+            } catch (JSONException e) {
+                status[1] = e.toString();
+            }
+        } catch (MalformedURLException e) {
+            status[1] = e.toString();
+        }
+
+        catch (IOException e) {
+            status[1] = e.toString();
+        }
+        return status;
+    }
+
     //  Establish The HTTP Connection For Any Authentication Requests Using The Supplied URL.
     //  Saves On Redundant Code.
     private static HttpURLConnection EstablishAuthenticationConnection(URL urlIn, String reqMethod)
@@ -193,6 +238,16 @@ public class NetworkAccess {
         JSONObject jsonObject = new JSONObject();
         jsonObject.accumulate("username", usernameIn);
         jsonObject.accumulate("password", passwordIn);
+        return jsonObject;
+    }
+
+    private static JSONObject BuildPartyJSON(String passwordIn, String modeIn, String adminIn)
+            throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.accumulate("PASSWORD", passwordIn);
+        jsonObject.accumulate("MODE", modeIn);
+        jsonObject.accumulate("ADMIN", adminIn);
         return jsonObject;
     }
 
