@@ -20,7 +20,6 @@
         tools:layout_editor_absoluteX="0dp" />
 
     <ScrollView
-        Backend_Party_Creation
         android:id="@+id/splash_page_form"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,10 +63,8 @@
                 android:backgroundTint="@color/button_main"
                 android:text="@string/join_a_party"
                 android:textColor="@color/Text_Light"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imageView3"
                 app:layout_constraintVertical_bias="0.0" />
 
             <Button
@@ -78,7 +75,6 @@
                 android:backgroundTint="@color/button_main"
                 android:text="@string/create_a_party"
                 android:textColor="@color/Text_Light"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button2"
@@ -92,7 +88,6 @@
                 android:backgroundTint="@color/button_main"
                 android:text="@string/continue_party"
                 android:textColor="@color/Text_Light"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintStart_toStartOf="parent"
@@ -106,7 +101,6 @@
                 android:backgroundTint="@color/button_main"
                 android:text="@string/view_profile"
                 android:textColor="@color/Text_Light"
-                app:layout_constraintBottom_toBottomOf="@+id/imageView3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button4"
@@ -125,7 +119,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView3"
                 app:layout_constraintVertical_bias="0.0" />
         </LinearLayout>
     </ScrollView>
