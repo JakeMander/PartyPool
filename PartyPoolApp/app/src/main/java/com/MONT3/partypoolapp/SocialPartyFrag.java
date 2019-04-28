@@ -21,8 +21,8 @@ import org.w3c.dom.Text;
  */
 public class SocialPartyFrag extends Fragment {
 
-    String[] peepleOnMenu = {"DAVE SMITH", "KEVIN JONES", "JAMES BARNS","HARRY STARK","BOBBY BATES","DAVE SMITH", "KEVIN JONES", "JAMES BARNS","HARRY STARK","BOBBY BATES"};
-    int[] images = {R.drawable.profile_1, R.drawable.profile_2,R.drawable.profile_3, R.drawable.profile_4, R.drawable.profile_5,R.drawable.profile_1, R.drawable.profile_2,R.drawable.profile_3, R.drawable.profile_4, R.drawable.profile_5};
+    String[] peepleOnMenu = {"DAVE SMITH","DAVE SMITH","DAVE SMITH", "KEVIN JONES", "JAMES BARNS","HARRY STARK","BOBBY BATES","DAVE SMITH", "KEVIN JONES", "JAMES BARNS","HARRY STARK","BOBBY BATES"};
+    int[] images = {R.drawable.profile_1,R.drawable.profile_1, R.drawable.profile_1,  R.drawable.profile_2,R.drawable.profile_3, R.drawable.profile_4, R.drawable.profile_5,R.drawable.profile_1, R.drawable.profile_2,R.drawable.profile_3, R.drawable.profile_4, R.drawable.profile_5};
 
     public SocialPartyFrag() {
         // Required empty public constructor

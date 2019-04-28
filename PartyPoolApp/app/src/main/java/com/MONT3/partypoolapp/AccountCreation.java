@@ -198,7 +198,7 @@ public class AccountCreation extends AppCompatActivity {
 
             mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
             mSignUpFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                    show ? 1 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -207,7 +207,7 @@ public class AccountCreation extends AppCompatActivity {
 
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                    show ? 1 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
