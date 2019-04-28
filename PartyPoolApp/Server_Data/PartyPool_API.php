@@ -43,15 +43,19 @@ class PartyPool_API extends RestService
     public function performGet($url, $parameters, $requestBody, $accept)
     {
         //  Group Functionality By Number Of Parameters For Easier Reading And More Logical Structure.
-        switch (count($parameters)) {
-
+        switch (count($parameters))
+        {
             case 2:
-
                 //  TODO: Remove Once App Is Running.
                 //  Test Function For Use In Browser. Checks Connection And Runs A Simple SELECT PostgreSQL Query
                 //  To Retrieve A TestUser Password.
                 if (strtoupper($parameters[0]) == "TESTLOGIN")
                 {
+                    if ($parameters[1] == null)
+                    {
+                        die (json_encode(new JsonResponse("NO", "NO USERNAME SUPPLIED", null)));
+                    }
+
                     $userValue = $parameters[1];
                     $conn = pg_connect($this->connString);
 
@@ -71,12 +75,12 @@ class PartyPool_API extends RestService
                             //  If Query Fails, Return The Error Message Returned By Database.
                             if (!result)
                             {
-                                die (json_encode(new JsonResponse("NO", "Query Has Failed",
+                                die (json_encode(new JsonResponse("NO", "QUERY AS FAILED",
                                     null)));
                             }
 
                             //  While pg_fetch_row Has Rows To Read, Read The Next Returned Row And Echo Fields.
-                            if (pg_num_rows($result) != 0)
+                            else if (pg_num_rows($result) != 0)
                             {
                                 $users = array();
 
@@ -98,7 +102,7 @@ class PartyPool_API extends RestService
 
                             else
                             {
-                                echo json_encode(new JsonResponse("NO", "Query Has Returned 0 Values",
+                                echo json_encode(new JsonResponse("NO", "NO VALUES RETURNED FROM QUERY",
                                     null));
                             }
                         }
@@ -118,19 +122,71 @@ class PartyPool_API extends RestService
                     //  We Have Been Unable To Establish A Connection To The Database. Terminate Execution Of Script.
                     else
                     {
-                        die(json_encode(new JsonResponse("NO","Connection Has Failed",
-                            null)));
+                        die(json_encode(new JsonResponse("NO","CONNECTION HAS FAILED", null)));
+                    }
+                }
+
+                //  Check A PartyPassword For Uniqueness Then Inform The Client.
+                else if (strtoupper($parameters[0]) == "CHECKPASSWORD")
+                {
+                    if ($parameters[1] == null)
+                    {
+                        die (json_encode(new JsonResponse("NO", "NO PASSWORD SUPPLIED", null)));
+                    }
+
+                    $partyPassword = $parameters[1];
+                    $conn = pg_connect($this -> connString);
+
+                    if ($conn)
+                    {
+                        try
+                        {
+                            $sql = 'SELECT * FROM party WHERE password = $1';
+                            pg_prepare($conn, "PasswordCheck", $sql);
+                            $result = pg_execute($conn, "PasswordCheck", array($partyPassword));
+
+                            if (!result)
+                            {
+                                die (json_encode(new JsonResponse("NO", "QUERY HAS FAILED", null)));
+                            }
+
+                            //  We Need To Inform The Client In The Instance A Requested Party Password Is Already Taken.
+                            if (pg_num_rows($result) != 0)
+                            {
+                                echo (json_encode(new JsonResponse("NO", "PASSWORD ALREADY GENERATED", null)));
+                            }
+
+                            else
+                            {
+                                echo(json_encode(new JsonResponse("YES", "PASSWORD IS VALID", $partyPassword)));
+                            }
+                        }
+
+                        catch (Exception $e)
+                        {
+                            die(json_encode("NO", "ERROR WITH QUERY", $e));
+                        }
+
+                        finally
+                        {
+                            pg_close($conn);
+                        }
+                    }
+
+                    else
+                    {
+                        die(json_encode(new JsonResponse("NO","CONNECTION HAS FAILED", null)));
                     }
                 }
 
                 else
                 {
-                    json_encode(new JsonResponse("NO","Invalid Parameter Supplied", null));
+                    die (json_encode(new JsonResponse("NO","UNKNOWN PARAMETER SUPPLIED", null)));
                 }
             break;
 
             default:
-                json_encode(new JsonResponse("NO","Invalid Number Of Parameters Supplied", null));
+                die (json_encode(new JsonResponse("NO", "INVALID NUMBER OF PARAMETERS SUPPLIED", null)));
                 break;
         }
     }
@@ -199,8 +255,7 @@ class PartyPool_API extends RestService
 
                     else
                     {
-                        echo (json_encode(new JsonResponse("NO",
-                            "Missing Credentials", null)));
+                        echo (json_encode(new JsonResponse("NO", "Missing Credentials", null)));
                     }
 
                 }
@@ -250,6 +305,12 @@ class PartyPool_API extends RestService
                                 $result = pg_execute($conn, "Login", array($username, $password));
                                 echo json_encode(new JsonResponse("YES", "Account Created",
                                     null));
+
+                                if (!$result)
+                                {
+                                    die (json_encode(new JsonResponse("NO", "Query Has Failed: ".pg_errormessage($conn),
+                                        null)));
+                                }
                             }
                         }
 
@@ -268,6 +329,92 @@ class PartyPool_API extends RestService
                     else
                     {
                         echo (json_encode(new JsonResponse("NO", "Missing Credentials", null)));
+                    }
+                }
+
+                //  Password Has Been Verified As Unique. Service Will Now Create A Party Which Will Contain Details
+                //  Regarding Mode And Admin Permissions. The Password Will Act As A Foreign Key To Song Data.
+                else if ($parameters[0] == "CREATEPARTY")
+                {
+                    $partyDetails = json_decode($requestBody);
+
+                    //  Ensure All The Data Required To Update Our Database Has Been Set. Missing Data Will Cause
+                    //  Exceptions On The DBMS.
+                    if(isset($partyDetails ->{"password"}) && isset($partyDetails ->{"mode"})
+                         && isset ($partyDetails ->{"timestamp"}) && isset ($partyDetails ->{"admin"}))
+                    {
+
+                        //  Extract The Values We Need To Update Our Party And Association Table From JSON.
+                        $password = $partyDetails -> {"password"};
+                        $mode = $partyDetails -> {"mode"};
+                        $timestamp = $partyDetails -> {"timestamp"};
+                        $admin = $partyDetails -> {"admin"};
+
+                        //  Update Our Party Values Then Establish An Association Between The New Party And The User
+                        //  Who Is Creating The Party (Admin). This Will Allow Us To Logically Manage User And Party
+                        //  Details Separately.
+                        try
+                        {
+                            $conn = pg_connect($this->connString);
+
+                            //  Initialise Our SQL Statements We Will Use To Update Both The Party Table And The Party
+                            //  Association Table.
+                            $sqlInsertParty = 'INSERT INTO party VALUES ($1, $2, $3)';
+                            $sqlInsertAssociation = 'INSERT INTO partyassociation VALUES ($1, $2)';
+
+                            //  Begin A Transaction To Conform To ACID Principles. A Query Should Change All Or
+                            //  Change Nothing!
+                            pg_query($conn,"BEGIN");
+
+                            //  Prepare Our Statements And Send Them Over To The DBMS So They Can Be Called.
+                            pg_prepare($conn, "CreatePartyAddParty", $sqlInsertParty);
+                            pg_prepare($conn, "CreatePartyAddAssociation", $sqlInsertAssociation);
+
+                            //  Our Queries Must Be Executed Separately, So Store Each Result Separately So We Can
+                            //  Evaluate If They Were Successful or Not.
+                            $result1 = pg_execute($conn, "CreatePartyAddParty",
+                                array($password, $mode, $timestamp));
+                            $result2 = pg_execute($conn, "CreatePartyAddAssociation",
+                                array($admin, $password));
+
+                            //  If One Of The Queries Fails, Attempt To Rollback To The Previous Values Stored In
+                            //  The Database.
+                            if (!$result1 || !$result2)
+                            {
+                                if (pg_query($conn,"ROLLBACK"))
+                                {
+                                    die(json_encode(new JsonResponse("NO", "Query Has Failed Values Rolled Back",
+                                        null)));
+                                }
+
+                                //  If The Rollback Fails, Inform The User And Kill The Script. This Allows Client Side
+                                //  To Be Made Aware That The Party Has Not Been Created. The Server Will Handle The
+                                //  Dead Transaction On The Server Side.
+                                else
+                                {
+                                    die(json_encode(new JsonResponse("NO", "Rollback Has Failed: ", null)));
+                                }
+                            }
+
+                            echo (json_encode(new JsonResponse("YES", "Changes Successfully Committed", null)));
+                            pg_query($conn, "COMMIT");
+                        }
+
+                        catch (Exception $e)
+                        {
+                            die(json_encode(new JsonResponse("NO", "Query Has Failed: ".$e,
+                                null)));
+                        }
+
+                        finally
+                        {
+                            pg_close($conn);
+                        }
+
+                    }
+
+                    else {
+                        die(json_encode(new JsonResponse("NO", "Required JSON Parameters Not Received: ", null)));
                     }
                 }
 
