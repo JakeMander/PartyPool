@@ -179,25 +179,21 @@ public class NetworkAccess {
     //  Send All The Details Off To The Web Service For Party Creation.
     //  TODO: Add Time Stamp For Party Creation, This Will Allow Us To Remove Any Outdated Party's
     //  TODO: From The Database When A Client Logs In If They Have Not Been Closed Properly.
-    public String[] CreateParty(String passwordIn, String modeIn, String adminIn) {
+    public String[] CreateParty(String passwordIn, String modeIn, String adminIn,
+                                String timestampIn) {
 
         String password = passwordIn;
         String mode = modeIn;
         String admin = adminIn;
-
-        //  Time Settings For Management Of The Timestamp. This Will Be Used By The Database To
-        //  Clear Out Old Parties Upon The User Logging In To The Application.
-        TimeZone locale = null;
-        ZonedDateTime timestamp = null;
+        String timestamp = timestampIn;
 
         String[] status = {"NO", "Network Error: Unhandled", "NODATA"};
 
         try {
             HttpURLConnection connection = EstablishAuthenticationConnection (new URL
-                    (baseURL + "/CREATEPARTY/" + passwordIn), "POST");
+                    (baseURL + "/CREATEPARTY"), "POST");
             try {
-                locale = TimeZone.getDefault();
-                JSONObject jsonObject = BuildPartyJSON(password, mode, admin);
+                JSONObject jsonObject = BuildPartyJSON(password, mode, admin, timestamp);
                 try {
                     ConnectionWriter(connection, jsonObject);
                     status = ConnectionReader(connection);
@@ -241,13 +237,17 @@ public class NetworkAccess {
         return jsonObject;
     }
 
-    private static JSONObject BuildPartyJSON(String passwordIn, String modeIn, String adminIn)
-            throws JSONException {
+    //  Database Requires Party Mode, Party Password, Timestamp And Admin In Order To Uniquely
+    //  Identify The Party, Define How The Party Is Set Up And Allow Out Of Date Parties To Be
+    //  Deleted Upon Logging In To The Service.
+    private static JSONObject BuildPartyJSON(String passwordIn, String modeIn, String adminIn,
+            String timestampIn) throws JSONException {
 
         JSONObject jsonObject = new JSONObject();
-        jsonObject.accumulate("PASSWORD", passwordIn);
-        jsonObject.accumulate("MODE", modeIn);
-        jsonObject.accumulate("ADMIN", adminIn);
+        jsonObject.accumulate("password", passwordIn);
+        jsonObject.accumulate("mode", modeIn);
+        jsonObject.accumulate("timestamp", timestampIn);
+        jsonObject.accumulate("admin", adminIn);
         return jsonObject;
     }
 

@@ -3,6 +3,7 @@ package com.MONT3.partypoolapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
@@ -14,6 +15,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Random;
 
 public class TestActivity extends AppCompatActivity implements DialogListener{
@@ -34,11 +39,12 @@ private String passwordGenError = null;
 NetworkAccess networkAccess = null;
 
 private PartyModes selectedMode = null;
-private String password;
+private String password = null;
+private String admin = null;
 
 //  References To Party Confirm Dialog Box In Order To Manipulate Dialog From Async Process.
 private RadioButton radioParty = null;
-private  RadioButton radioContinuous = null;
+private RadioButton radioContinuous = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +56,13 @@ private  RadioButton radioContinuous = null;
         //  If User Has Reached Splash Page From The Login Screen, Pull Data From The Associated
         //  Intent, Else Pull The Data From The Create Account Screen Instead.
         if (getIntent().hasExtra("LOGINDATA")) {
-            tv.setText("Welcome, " + getIntent().getStringExtra("LOGINDATA"));
+            admin = getIntent().getStringExtra("LOGINDATA");
+            tv.setText("Welcome, " + admin);
         }
 
         else {
-            tv.setText("Welcome, " + getIntent().getStringExtra("CREATEDATA"));
+            admin = getIntent().getStringExtra("CREATEDATA");
+            tv.setText("Welcome, " + admin);
         }
 
         //  Initialise Our networkAccess Singleton To Provide Access To All Functionality Required
@@ -120,7 +128,6 @@ private  RadioButton radioContinuous = null;
             return;
         }
 
-
          /*  Generate A New Password And Evaluate Against The Database To Test For It's Validity.
          *  All Passwords Need To Be Unique To Identify The Party And Act As A Reference. If By
          *  Chance, A Password That Is Generate Matches And Already Existed Function, Generate A
@@ -139,6 +146,15 @@ private  RadioButton radioContinuous = null;
     @Override
     public void onDialogPositiveClickCreateParty(DialogFragment dialog) {
 
+        if (mCreatePartyTask != null) {
+            return;
+        }
+
+        //  Begin The Process Of Creating Our New Party on The Database Via An Async Task To Isolate
+        //  The Process From The UI.
+        mCreatePartyTask = new CreateParty(password, selectedMode, admin);
+        mCreatePartyTask.execute((Void) null);
+        showProgress(true);
     }
 
     @Override
@@ -265,14 +281,19 @@ private  RadioButton radioContinuous = null;
             if (passwordGenOk) {
                 password = passwordToCheck;
 
+                /*  Pass In The Selected Details To The Confirmation Dialog Box So The Dialog Box
+                 *  Can Load In The Values Via An Intent And Update The TextViews With The Relevant
+                 *  Data. Then Set The Confirmed Selected Mode Ready For Dispatch To Database. */
+
                 if(radioParty.isChecked())
                 {
                     openPartyConfirmDialog(PartyModes.PARTY, password);
+                    selectedMode = PartyModes.PARTY;
                 }
 
                 else if(radioContinuous.isChecked())
                 {
-                    //choice = 2;
+                    selectedMode = PartyModes.CONTINUOUS;
                     Toast.makeText(getBaseContext(),"Selected option: Continuous Mode",
                             Toast.LENGTH_SHORT).show();
                 }
@@ -298,18 +319,33 @@ private  RadioButton radioContinuous = null;
         String password;
         PartyModes mode;
         String admin;
+
+        SimpleDateFormat timestampFormat;
+        Date currentTime;
+        String timestamp;
+
         String [] status;
 
         public CreateParty(String passwordIn, PartyModes modeIn, String adminIn) {
             password = passwordIn;
             mode = modeIn;
             admin = adminIn;
+
+            /*  Retrieve The Current Time From The Device And Format The Values Into An Appropriate
+             *  Format For The Database (mm-dd-yyyy hh:mm:ss +timezone) In Accordance With
+             *  PostgreSQL Formatting. */
+
+            currentTime = Calendar.getInstance().getTime();
+            timestampFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss Z");
+            timestamp = timestampFormat.format(currentTime);
+
             status = null;
         }
 
         @Override
         protected Boolean doInBackground (Void... params) {
-            status = networkAccess.CreateParty(password, mode.toString(), admin);
+
+            status = networkAccess.CreateParty(password, mode.toString(), admin, timestamp);
 
             if (status[0].equals("NO")) {
                 return false;
@@ -323,14 +359,26 @@ private  RadioButton radioContinuous = null;
             mCreatePartyTask = null;
             showProgress(false);
 
-            if (selectedMode == PartyModes.PARTY)
-            {
-                //  TODO: Load Party Actvitiy.
+            //  If Our HTTP Request Has Succeeded, Evaluate The Mode We Wish To Create, Initialise
+            //  A New Intent With The Appropriate Party Details, Then Start The New Activity.
+            if (partyCreationOk) {
+
+                if (selectedMode == PartyModes.PARTY) {
+                    Intent myIntent = new Intent(TestActivity.this,
+                            MainScreenParty.class);
+                    myIntent.putExtra("LoginType", "Admin");
+                    startActivity(myIntent);
+                }
+
+                else {
+                    Toast.makeText(getBaseContext(), "Selected option: Continuous Mode",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
 
-            else
-            {
-                // TODO: Load Continuous Activity.
+            else {
+                Toast.makeText(getApplicationContext(), "Party Creation Has Failed: " +
+                        status[1],Toast.LENGTH_LONG).show();
             }
         }
 

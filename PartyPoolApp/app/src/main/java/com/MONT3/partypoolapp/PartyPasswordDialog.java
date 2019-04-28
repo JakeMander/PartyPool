@@ -87,19 +87,6 @@ public class PartyPasswordDialog extends AppCompatDialogFragment {
                         //  Defined Party.
                         activityReference.onDialogPositiveClickCreateParty
                                 (PartyPasswordDialog.this);
-                        //  Determine Which Mode We Load Based On Previous Dialog Selection.
-                        if (mode.equals("PARTY")) {
-                            Intent myIntent = new Intent(getContext(), MainScreenParty.class);
-                            myIntent.putExtra("LoginType","Admin");
-                            startActivity(myIntent);
-                        }
-
-                        //  TODO: Change To Continuous Mode Once Implemented
-                        else {
-                            Intent loadContinuousMode = new Intent(getActivity(),
-                                    MainScreenParty.class);
-                            startActivity(loadContinuousMode);
-                        }
                     }
                 })
 

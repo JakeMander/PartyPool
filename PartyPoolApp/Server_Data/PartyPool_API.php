@@ -364,11 +364,9 @@ class PartyPool_API extends RestService
 
                             //  Begin A Transaction To Conform To ACID Principles. A Query Should Change All Or
                             //  Change Nothing!
-                            echo "BEGIN";
                             pg_query($conn,"BEGIN");
 
                             //  Prepare Our Statements And Send Them Over To The DBMS So They Can Be Called.
-                            echo "Prepare";
                             pg_prepare($conn, "CreatePartyAddParty", $sqlInsertParty);
                             pg_prepare($conn, "CreatePartyAddAssociation", $sqlInsertAssociation);
 
@@ -385,8 +383,8 @@ class PartyPool_API extends RestService
                             {
                                 if (pg_query($conn,"ROLLBACK"))
                                 {
-                                    die((json_encode(new JsonResponse("NO", "Query Has Failed Values Rolled Back",
-                                        null))));
+                                    die(json_encode(new JsonResponse("NO", "Query Has Failed Values Rolled Back",
+                                        null)));
                                 }
 
                                 //  If The Rollback Fails, Inform The User And Kill The Script. This Allows Client Side
@@ -394,17 +392,12 @@ class PartyPool_API extends RestService
                                 //  Dead Transaction On The Server Side.
                                 else
                                 {
-                                    die ((json_encode(new JsonResponse("NO", "Rollback Has Failed: ", null))));
+                                    die(json_encode(new JsonResponse("NO", "Rollback Has Failed: ", null)));
                                 }
                             }
 
-                            //  Transaction Has Been Successful. Commit The Changes So We Can Be Certain Atomicity Of
-                            //  Queries Is Maintained.
-                            else
-                            {
-                                pg_query($conn, "COMMIT");
-                                (json_encode(new JsonResponse("YES", "Changes Successfully Committed")));
-                            }
+                            echo (json_encode(new JsonResponse("YES", "Changes Successfully Committed", null)));
+                            pg_query($conn, "COMMIT");
                         }
 
                         catch (Exception $e)
