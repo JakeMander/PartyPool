@@ -30,8 +30,8 @@ private Button fileExplorer;
         // Required empty public constructor
     }
 
-    String[] songName = {"Afria","Afria","Afria","Afria","Afria","Afria","Afria","Afria","Africa","Africa","Afria","Africa","Africa"};
-    String[] songArtist = {"Toto","Toto","Toto","Toto","Toto","Toto","Toto","Toto","Toto","toto","Toto","Toto","toto"};
+    //String[] songName = {"Afria","Afria","Afria","Afria","Afria","Afria","Afria","Afria","Africa","Africa","Afria","Africa","Africa"};
+    //String[] songArtist = {"Toto","Toto","Toto","Toto","Toto","Toto","Toto","Toto","Toto","toto","Toto","Toto","toto"};
     //int[] songAblumArt = {R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto,R.drawable.toto};
 
 
@@ -125,6 +125,8 @@ private Button fileExplorer;
 
             return view;
         }
+
+
 
     }
 }

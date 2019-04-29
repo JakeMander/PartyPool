@@ -33,6 +33,7 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
 
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 12345;
     private ArrayList<Song> songList;
+    private ArrayList<Song> customList = new ArrayList<Song>();
     private ListView songView;
     private MusicService musicSrv;
     private Intent playIntent;
@@ -44,19 +45,22 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen_party);
-        songView = (ListView)findViewById(R.id.song_list);
-        songList = new ArrayList<Song>();
-        getSongList();
-        Collections.sort(songList, new Comparator<Song>(){
-            public int compare(Song a, Song b){
-                return a.getTitle().compareTo(b.getTitle());
-            }
-        });
+        if(getIntent().getExtras().getString("LoginType").equals("Admin"))
+        {
 
-        SongAdapter songAdt = new SongAdapter(this, songList);
-        songView.setAdapter(songAdt);
-        setController();
+            songView = (ListView) findViewById(R.id.song_list);
+            songList = new ArrayList<Song>();
+            getSongList();
+            Collections.sort(songList, new Comparator<Song>() {
+                public int compare(Song a, Song b) {
+                    return a.getTitle().compareTo(b.getTitle());
+                }
+            });
 
+            SongAdapter songAdt = new SongAdapter(this, songList);
+            songView.setAdapter(songAdt);
+            setController();
+        }
         ViewPager pager = findViewById(R.id.viewPagerParty);
 
         pager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
@@ -337,6 +341,13 @@ public class MainScreenParty extends FragmentActivity implements MediaPlayerCont
     public ArrayList<Song> getSongs()
     {
         return songList;
+    }
+    public ArrayList<Song> getCustomSongs(){return customList;}
+
+    public void setSongs(ArrayList<Song> newList)
+    {
+        customList = newList;
+
     }
 
 }
