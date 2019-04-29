@@ -3,26 +3,14 @@ package com.MONT3.partypoolapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.renderscript.ScriptGroup;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
 
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,38 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.List;
-import java.net.URL;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
 // A login screen that offers login via email/password.
 public class LoginActivity extends AppCompatActivity {
@@ -184,7 +140,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         else {
-            // Show a progress spinner, and kick off a background task to
+            // Show a progress spinner, hide the activity and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
             mAuthTask = new UserLoginTask(email, password);
@@ -244,111 +200,46 @@ public class LoginActivity extends AppCompatActivity {
      */
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
+        private final String mUsername;
         private String mPassword;
         private String mError;
 
         UserLoginTask(String email, String password) {
-            mEmail = email;
+            mUsername = email;
             mPassword = password;
             mError = "";
         }
 
-        //  Upon Initialisation And Execution Of The Asynchronous Task, We Need To Set Up Our
-        //  Connection And Run Our Query Which Will Return The Credentials Requested From The Server.
+        //  Run The Login Attempt In The Background. Notify onPostExecute Of Status Via Boolean
+        //  Value in Order To Determine If App Progresses To Splash Page Or Prompts User To Attempt
+        //  New Login.
         @Override
         protected Boolean doInBackground(Void... params) {
-            try {
-
-                try {
-                    mPassword = mHasher.HashPassword(mPassword);
-                }
-
-                catch (NoSuchAlgorithmException e){
-                    e.printStackTrace();
-                    mError = e.getMessage();
-                    return false;
-                }
-
-                //  Define The Location Of Our Web Service Function And Create A Connection To
-                //  The Web Service.
-                final URL url = new URL("https://computing.derby.ac.uk/~partypool/LOGIN");
-                HttpURLConnection serverConnection = (HttpsURLConnection) url.openConnection();
-
-                //  Define Our Request As "POST" and Enable Output And Input. Allow For HTTP Read/
-                //  Write And Specify The Type Of Data We Are Handling.
-                serverConnection.setRequestMethod("POST");
-                serverConnection.setDoOutput(true);
-                serverConnection.setDoInput(true);
-                serverConnection.setRequestProperty( "Content-type", "application/json");
-
-                //  Build Our JSON Object Based On The Password And Username We Have Received.
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.accumulate("username", mEmail);
-                jsonObject.accumulate("password", mPassword);
-
-                //  Send Our HTTP Request Off To The Webservice Via A BufferedWriter.
-                OutputStream output = serverConnection.getOutputStream();
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter
-                        (output, "UTF-8"));
-
-                writer.write(jsonObject.toString());
-                writer.flush();
-                writer.close();
-
-                //  Receive HTTP Request Via A Buffered Reader.
-                String line = "";
-                String result = "";
-
-                InputStream inputStream = serverConnection.getInputStream();
-                BufferedReader streamReader = new BufferedReader(new InputStreamReader
-                        (inputStream, "iso-8859-1"));
-
-                while ((line = streamReader.readLine()) != null) {
-                    result += line;
-                }
-
-                //  Ensure Our Connection Is Properly Terminated.
-                serverConnection.disconnect();
-
-                //  Creates A General JSON Object To Hold All The JSON Data. We Can Then Parse
-                //  Each Individual Component From This.
-                JSONObject receivedCredentials = new JSONObject(result);
-                JSONArray jsonResponse = receivedCredentials.getJSONArray("jsonResponse");
-
-                String status = jsonResponse.getString(0);
+                NetworkAccess network = NetworkAccess.getNetworkAccess();
+                String[] status = network.Login(mUsername, mPassword);
 
                 //  If First Index Is No, Login Has Failed. Set The Error Message For User Feedback.
-                if (status.equals("NO"))
+                if (status[0].equals("NO"))
                 {
-                    mError = jsonResponse.getString(1);
+                    mError = status[1];
                     return false;
                 }
-            }
-
-            catch (IOException e) {
-                e.printStackTrace();
-                mError = e.toString();
-                return false;
-            }
-
-            catch (JSONException e){
-                e.printStackTrace();
-                mError = e.toString();
-                return false;
-            }
 
             return true;
         }
 
         @Override
         protected void onPostExecute(final Boolean success) {
+
+            //  mAuthTask Needs To Be Reset In Order To Allow Further Async Calls To Be Made. Once
+            //  Our Login Attempt Has Been Made Notify The showProgress Method So It Can Stop The
+            //  Loading Animation.
             mAuthTask = null;
             showProgress(false);
 
             if (success) {
                 Intent myIntent = new Intent(LoginActivity.this, TestActivity.class);
-                myIntent.putExtra("LOGINDATA",mEmail.toString());
+                myIntent.putExtra("LOGINDATA",mUsername);
                 LoginActivity.this.startActivity(myIntent);
             }
 

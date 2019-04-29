@@ -26,6 +26,7 @@ public class Song {
         return artist;
     }
 
+
     public Boolean getIsAdded(){
         return added;
     }
@@ -34,4 +35,5 @@ public class Song {
     {
         added=b;
     }
+
 }
